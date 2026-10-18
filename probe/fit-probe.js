@@ -1045,13 +1045,15 @@
   function scaleLabel(s) { return s <= -0.25 ? 'runs small' : s >= 0.25 ? 'runs large' : 'true to size'; }
   function verdictOf(s) { return s < 0 ? 'small' : s > 0 ? 'large' : 'perfect'; }
 
-  /** "5'10-6'0", "5' 7\"", "170 cm" -> centimetres (midpoint of a band), or null. */
+  const mean = (xs) => xs.reduce((a, b) => a + b, 0) / xs.length;
+
+  /** "5'10-6'0", "5' 7\"", "150-160 cm" -> centimetres (midpoint of a band), or null. */
   function heightCm(v) {
     const s = String(v || '');
-    const cm = s.match(/(1\d{2})\s*cm/i);
-    if (cm) return Number(cm[1]);
+    const cm = /cm/i.test(s) ? s.match(/(?<!\d)1\d{2}(?!\d)/g) : null;
+    if (cm) return Math.round(mean(cm.map(Number)));
     const inches = [...s.matchAll(/(\d)\s*(?:'|’|ft)\s*(\d{1,2})?/g)].map((m) => Number(m[1]) * 12 + Number(m[2] || 0));
-    return inches.length ? Math.round((inches.reduce((a, b) => a + b, 0) / inches.length) * 2.54) : null;
+    return inches.length ? Math.round(mean(inches) * 2.54) : null;
   }
 
   const sizeOrNull = (v) => (v != null && sizes.isSizeLabel(String(v).trim()) ? String(v).trim() : null);
@@ -1061,7 +1063,9 @@
   //
   // The page carries the store key in the loader script and the product id on the widget.
   // The storefront API is public and answers with CORS for the store's own origin. A "Size"
-  // custom field is the fit question, 1 = runs small, 2 = true to size, 3 = runs large.
+  // custom field is the fit question. Yotpo's widget draws its answer as one of three steps,
+  // "Marked Size Down" / "Marked Fit to Size" / "Marked Size Up" (1 = runs small, 2 = true to size,
+  // 3 = runs large), unless the store set its own options, which the API does not return.
 
   const yotpo = {
     name: 'yotpo',
@@ -1083,11 +1087,13 @@
         height: field(r, (f) => /height/i.test(f.title || '')),
       }));
 
-      const fits = answers.map((a) => (a.fit && typeof a.fit.value === 'number' ? a.fit.value : null));
+      const raw = answers.map((a) => (a.fit && typeof a.fit.value === 'number' ? a.fit.value : null));
+      // An answer off the 3-step scale means the store set its own options: the scale is unknown,
+      // so no fit answer on this page is used rather than a guessed reading of it.
+      const scaleKnown = raw.every((v) => v == null || (Number.isInteger(v) && v >= 1 && v <= 3));
+      const fits = scaleKnown ? raw : raw.map(() => null);
       const answered = fits.filter((v) => v != null);
-      // A store can configure a 5-step fit question; its middle is then 3, not 2.
-      const mid = answered.some((v) => v > 3) ? 3 : 2;
-      const norm = (v) => Math.max(-1, Math.min(1, (v - mid) / (mid - 1)));
+      const norm = (v) => v - 2;
 
       const reviewers = answers.map((a, i) => ({
         heightCm: a.height ? heightCm(a.height.value) : null,
@@ -1105,7 +1111,7 @@
       } else {
         // The bottomline average is rounded, so it is only used when no review answered.
         const bl = Object.values(json.bottomline.customFieldsBottomline || {}).find((f) => f && f.type === 'Size');
-        if (bl && typeof bl.averageScore === 'number' && bl.averageScore > 0) {
+        if (scaleKnown && bl && typeof bl.averageScore === 'number' && bl.averageScore >= 1 && bl.averageScore <= 3) {
           const scale = +norm(bl.averageScore).toFixed(2);
           aggregate = { scale, label: scaleLabel(scale), n: json.bottomline.totalReview || null, source: 'yotpo' };
         }
@@ -1899,7 +1905,7 @@
       try { api = await reviews.read(doc, opts.fetchJson); } catch (e) { tiers.reviewApi = `error: ${e.message}`; }
       if (api) { platform = api.platform; t('reviewApi', () => applyReviewApi(product, api.fit)); }
     }
-    t('reviewWidget', () => { platform = platform || applyReviews(product, doc, config); });
+    t('reviewWidget', () => { const widget = applyReviews(product, doc, config); platform = platform || widget; });
     t('dom', () => applyDom(product, doc, url, config));
 
     if (product.sizes.options && !product.sizes.system) product.sizes.system = sizes.detectSystem(product.sizes.options.map((o) => o.label));

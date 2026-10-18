@@ -105,3 +105,46 @@ test('extract: a failing review API is reported in tiers and extraction still su
   assert.equal(res.tiers.reviewApi, 'error: blocked by CORS');
   assert.equal(res.product.reviewFit.distribution, null);
 });
+
+/** The fixture with every review's fit answer replaced by `fit` (null removes it). */
+function withFitAnswers(fit) {
+  const json = structuredClone(yotpoEverlane);
+  for (const r of json.reviews) {
+    const field = Object.values(r.customFields || {}).find((f) => f.fieldType === 'Size');
+    if (!field) continue;
+    if (fit == null) delete r.customFields[Object.keys(r.customFields).find((k) => r.customFields[k] === field)];
+    else field.value = fit;
+  }
+  return json;
+}
+
+test('yotpo: fit answers outside its 3-step scale are dropped, not rescaled', async () => {
+  const { fetchJson } = stubFetch({ [YOTPO_URL]: withFitAnswers(4) });
+  const out = await reviews.read(yotpoPage(), fetchJson);
+  assert.equal(out.fit.distribution, null);
+  assert.equal(out.fit.aggregate, null);
+  assert.ok(out.fit.reviewers.every((r) => r.fitVerdict === null));
+  assert.ok(out.fit.reviewers.some((r) => r.sizeBought), 'size and height answers are still kept');
+});
+
+test('yotpo: a centimetre height band becomes its midpoint', async () => {
+  const json = withFitAnswers(2);
+  const field = Object.values(json.reviews[0].customFields).find((f) => /height/i.test(f.title));
+  field.value = '150-160 cm';
+  const { fetchJson } = stubFetch({ [YOTPO_URL]: json });
+  const out = await reviews.read(yotpoPage(), fetchJson);
+  assert.equal(out.fit.reviewers[0].heightCm, 155);
+});
+
+test('extract: the review widget still fills fit facts the API left empty', async () => {
+  const json = withFitAnswers(null);
+  json.bottomline = { ...json.bottomline, customFieldsBottomline: {} };
+  const { fetchJson } = stubFetch({ [YOTPO_URL]: json });
+  const page = yotpoPage('<div class="yotpo-widget-instance" data-yotpo-product-id="7648929939542"></div>'
+    + '<div id="reviews"><p>Runs small 62%</p><p>True to size 30%</p><p>Runs large 8%</p></div>');
+  const res = await extract.extract(page, { url: 'https://www.everlane.com/products/womens-cloud-cable-cardigan-heather-charcoal', fetchJson });
+  assert.equal(res.reviewPlatform, 'yotpo');
+  assert.equal(res.product._src['reviewFit.reviewers'], 'reviewApi');
+  assert.deepEqual(res.product.reviewFit.distribution, { runsSmall: 0.62, trueToSize: 0.3, runsLarge: 0.08 });
+  assert.equal(res.product._src['reviewFit.distribution'], 'reviewWidget');
+});

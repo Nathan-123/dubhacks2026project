@@ -760,7 +760,7 @@
       try { api = await reviews.read(doc, opts.fetchJson); } catch (e) { tiers.reviewApi = `error: ${e.message}`; }
       if (api) { platform = api.platform; t('reviewApi', () => applyReviewApi(product, api.fit)); }
     }
-    t('reviewWidget', () => { platform = platform || applyReviews(product, doc, config); });
+    t('reviewWidget', () => { const widget = applyReviews(product, doc, config); platform = platform || widget; });
     t('dom', () => applyDom(product, doc, url, config));
 
     if (product.sizes.options && !product.sizes.system) product.sizes.system = sizes.detectSystem(product.sizes.options.map((o) => o.label));
