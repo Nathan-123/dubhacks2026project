@@ -6,6 +6,8 @@ Fitting Room is a Chrome extension (MV3) with a small local backend. It starts w
 
 Fitting Room is a hackathon build. Your data stays in the browser. The optional backend runs on your own computer.
 
+**Website:** [fittingroomfit.netlify.app](https://fittingroomfit.netlify.app). Download the extension and see how to install it. The site's source is in [docs/](docs/).
+
 
 ---
 
