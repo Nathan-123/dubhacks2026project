@@ -17,6 +17,7 @@
     shopifyJson: 0,
     jsonld: 1,
     stateBlob: 2,
+    reviewApi: 3,
     reviewWidget: 3,
     domTable: 4,
     dom: 4,

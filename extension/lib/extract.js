@@ -10,11 +10,11 @@
  */
 (function (root, factory) {
   const isNode = typeof module === 'object' && module.exports;
-  const deps = isNode ? { sizes: require('./sizes.js'), contract: require('./contract.js'), classification: require('./classification.js') } : root.FitKit;
-  const mod = factory(deps.sizes, deps.contract, deps.classification);
+  const deps = isNode ? { sizes: require('./sizes.js'), contract: require('./contract.js'), classification: require('./classification.js'), reviews: require('./reviews.js') } : root.FitKit;
+  const mod = factory(deps.sizes, deps.contract, deps.classification, deps.reviews);
   if (isNode) module.exports = mod;
   else (root.FitKit = root.FitKit || {}).extract = mod;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (sizes, contract, classification) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (sizes, contract, classification, reviews) {
   'use strict';
 
   const { fill } = contract;
@@ -316,7 +316,15 @@
   }
 
   // ---------------------------------------------------------------------------
-  // tier 3: review platform widgets
+  // tier 3: review platform APIs (reviews.js), then the rendered widgets
+
+  function applyReviewApi(product, fit) {
+    const S = 'reviewApi';
+    fill(product, 'reviewFit.distribution', fit.distribution, S);
+    fill(product, 'reviewFit.aggregate', fit.aggregate, S);
+    fill(product, 'reviewFit.reviewers', fit.reviewers, S);
+    if (fit.n != null && product.reviewFit.n == null) product.reviewFit.n = fit.n;
+  }
 
   const REVIEW_PLATFORMS = [
     ['okendo', '[data-oke-widget], [class*="okeReviews"], [class*="oke-w"]'],
@@ -747,7 +755,12 @@
     t('jsonld', () => applyJsonLd(product, nodes, ctx));
     t('stateBlob', () => applyState(product, stateBlobs(doc)));
     let platform = null;
-    t('reviewWidget', () => { platform = applyReviews(product, doc, config); });
+    if (opts.fetchJson) {
+      let api = null;
+      try { api = await reviews.read(doc, opts.fetchJson); } catch (e) { tiers.reviewApi = `error: ${e.message}`; }
+      if (api) { platform = api.platform; t('reviewApi', () => applyReviewApi(product, api.fit)); }
+    }
+    t('reviewWidget', () => { platform = platform || applyReviews(product, doc, config); });
     t('dom', () => applyDom(product, doc, url, config));
 
     if (product.sizes.options && !product.sizes.system) product.sizes.system = sizes.detectSystem(product.sizes.options.map((o) => o.label));
