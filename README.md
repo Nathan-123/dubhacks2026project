@@ -161,10 +161,10 @@ Pre-cache: visit each demo page once before presenting. The extension caches eve
 
 ## Known gaps
 
-- Not yet run against live stores. The probe exists for exactly this. Selectors, review-widget patterns (especially Okendo's fit attributes), and the state-blob walker are unverified on real pages.
+- Tested live on Uniqlo. Other stores' selectors, review-widget patterns (especially Okendo's fit attributes), and the state-blob walker are not yet checked on real pages. The probe exists for exactly this.
 - Return windows are read from policy wording and tested on synthetic text. Real policy pages are unverified.
 - Size-chart modals are not opened (we fall through rather than risk stealing focus). Vision tier not built.
-- The LLM and confidence paths are tested against mocked OpenRouter and Ollama servers, not yet against real models. Small models can miss fields, which the hallucination guard drops rather than guesses.
+- The LLM and confidence paths run against real OpenRouter models. The Ollama path is tested only against a mocked server. Small models can miss fields, which the hallucination guard drops rather than guesses.
 - Lazy-loaded reviews are only scrolled into view when a store config sets `lazyReviews: true`. That moves the page briefly, and scroll position is restored.
 - No cross-system size conversion (by design for v1). Order-history import, Fit Passport, and pairing alerts are not built.
 - Size-click detection on unknown stores re-reads the detected control after any click. Stores with fully custom pickers may need a `sizeControl` selector in their config.
