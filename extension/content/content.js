@@ -24,6 +24,7 @@
     stale: false,
     badge: null,
     run: 0,
+    scoring: 0,
     rec: null,
   };
 
@@ -94,42 +95,61 @@
   // scoring
 
   async function rescore() {
+    const scoring = ++state.scoring;
     if (!state.product) return;
-    const opts = { brandPriors: state.ctx.brandPriors, askDismissed: askDismissed() };
+    // Extraction or cache data may already differ from the current size control.
+    for (const { option, selected, available } of liveSizeChanges(state.product)) Object.assign(option, { selected, available });
+    const run = state.run;
+    const canonical = K.contract.canonicalUrl(location.href);
+    // Size controls mutate the live Product while backend/model requests are in flight.
+    const { product, profile, opts } = structuredClone({
+      product: state.product, profile: state.profile,
+      opts: { brandPriors: state.ctx.brandPriors, askDismissed: askDismissed() },
+    });
+    const current = () => scoring === state.scoring && run === state.run && canonical === K.contract.canonicalUrl(location.href) && !liveSizeChanges(product).length;
     let rec = null;
     if (state.ctx.settings && state.ctx.settings.serverScoring) {
-      rec = await send('scoreServer', { product: state.product, profile: state.profile, opts });
+      rec = await send('scoreServer', { product, profile, opts });
+      if (!current()) return;
     }
     if (!rec || rec.error) {
-      rec = K.score.score(state.product, state.profile, opts);
+      rec = K.score.score(product, profile, opts);
       // Model confidence (free OpenRouter model on the backend). Wait briefly, then fall back to
       // the rule-based number, so a verdict is never shown and then flipped. Answers are cached
       // per evidence summary, so size clicks on the same page are instant.
       if (rec.personalized && rec.evidence && state.ctx.settings.modelConfidence !== false) {
+        if (!current()) return;
         if (!state.badge || !state.rec) showPending();
         const mc = await Promise.race([send('modelConfidence', { evidence: rec.evidence }), new Promise((r) => setTimeout(() => r(null), MODEL_WAIT_MS))]);
-        if (mc && mc.ok) rec = K.score.score(state.product, state.profile, { ...opts, confidenceOverride: mc });
+        if (!current()) return;
+        if (mc && mc.ok) rec = K.score.score(product, profile, { ...opts, confidenceOverride: mc });
       }
     }
+    if (!current()) return;
     state.rec = rec;
     const b = ensureBadge();
     b.mount(dockTarget(state.product));
     b.render(rec, { stale: state.stale });
   }
 
+  // Also read at publication time: a response can arrive before the click debounce ends.
+  function liveSizeChanges(product) {
+    if (!product || !product.sizes.options) return [];
+    const ctl = K.extract.findSizeControl(document, state.ctx.config);
+    if (!ctl) return [];
+    const changes = [];
+    for (const o of product.sizes.options) {
+      const live = ctl.options.find((c) => c.label === o.label);
+      const selected = !!(live && live.selected);
+      const available = live ? live.available !== false : o.available;
+      if (selected !== !!o.selected || available !== o.available) changes.push({ option: o, selected, available });
+    }
+    return changes;
+  }
+
   // Re-read the live size control: selection and availability change without navigation.
   function refreshLive() {
-    if (!state.product || !state.product.sizes.options) return;
-    const ctl = K.extract.findSizeControl(document, state.ctx.config);
-    if (!ctl) return;
-    let changed = false;
-    for (const o of state.product.sizes.options) {
-      const live = ctl.options.find((c) => c.label === o.label);
-      const sel = !!(live && live.selected);
-      const avail = live ? live.available !== false : o.available;
-      if (sel !== !!o.selected || avail !== o.available) { o.selected = sel; o.available = avail; changed = true; }
-    }
-    if (changed) rescore();
+    if (liveSizeChanges(state.product).length) rescore();
   }
 
   let liveTimer = null;
