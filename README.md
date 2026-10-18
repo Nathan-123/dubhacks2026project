@@ -11,7 +11,8 @@ FitCheck is a Chrome extension (MV3) with a small local backend. It gives a usef
 ```bash
 npm install
 node server/index.js          # backend on http://localhost:8787
-node --test test/*.test.js    # 56 tests: extractor fixtures, scorer, server, LLM + OpenRouter (mocked)
+npm test                     # extractor, scorer, content races, server, mocked LLM + OpenRouter
+npm run check                # JS syntax, architecture source guards, generated probe consistency
 ```
 
 **Completely free.** The AI parts use free models only:
@@ -42,7 +43,7 @@ Paste [probe/fit-probe.js](probe/fit-probe.js) into the DevTools console on a pr
 
 ## Architecture
 
-Four modules, each with a one-line contract. Store-specific knowledge stops at `extract`.
+Four main modules, each with a one-line contract. Store-specific knowledge stops at `extract`.
 
 | Module | Contract | File | Hides |
 |---|---|---|---|
@@ -54,6 +55,8 @@ Four modules, each with a one-line contract. Store-specific knowledge stops at `
 Glue: [content/content.js](extension/content/content.js) (wires the four on a page, size-click re-score, SPA navigation, order capture), [background.js](extension/background.js) (permissions → dynamic content scripts, store configs, local product cache, all backend calls), [wardrobe/](extension/wardrobe/), [popup/](extension/popup/).
 
 `lib/*.js` are UMD: the same files load as content scripts, in the service worker, and via `require()` in the server and tests. `score` has no DOM and no network.
+
+[classification.js](extension/lib/classification.js) owns shared clothing category and section rules, without DOM or network dependencies. Both extraction and order normalization use it; orders do not depend on the page reader. `extract.findReviewRegion()` returns the review element (or null); extractor `_internal` is diagnostic-only, for tests and the probe. The content controller snapshots scoring inputs and only publishes results from the latest still-current operation.
 
 ### The data contract
 
@@ -111,6 +114,8 @@ Scoring runs on-device by default (under 1 ms). Wardrobe → Stores → Advanced
 - Delete everything (wardrobe tab) clears storage, the cache, and revokes store permissions; open product tabs revert to rung 0 immediately.
 
 ## Testing
+
+`npm test` includes permanent regressions for navigation/profile/size scoring races, grounded model facts, malformed confidence and uncached retries. `npm run check` checks JavaScript syntax in the project source directories, direct diagnostic accesses in production, classification dependencies, and probe consistency. These are lightweight source guards, not a linter, formatter or typechecker. Run `npm run build:probe` after changing bundled modules. Live-store and manual Chrome QA remain separate.
 
 [fixtures/manifest.json](fixtures/manifest.json) lists cases: page HTML + capture URL + optional Shopify stub + expected extraction (subset match). Run one without a browser:
 
