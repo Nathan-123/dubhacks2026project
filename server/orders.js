@@ -5,7 +5,7 @@
 'use strict';
 
 const sizes = require('../extension/lib/sizes.js');
-const extract = require('../extension/lib/extract.js');
+const classification = require('../extension/lib/classification.js');
 
 const PII = /(@|\b\d{3}[\s.-]?\d{3}[\s.-]?\d{4}\b|\b(?:\d[ -]?){13,19}\b|\b\d+\s+\w+\s+(street|st|avenue|ave|road|rd|blvd|lane|ln|drive|dr|way|court|ct)\b|\b(visa|mastercard|amex|ending\s*in)\b)/i;
 
@@ -20,8 +20,8 @@ function scrubItem(it) {
 
 function heuristicParse(items, brand) {
   return items.map((it) => {
-    const cat = extract._internal.categorize(it.name) || {};
-    const section = extract._internal.sectionOf(it.name);
+    const cat = classification.categorize(it.name) || {};
+    const section = classification.sectionOf(it.name);
     const p = sizes.parseLabel(it.size);
     return {
       name: it.name, size: p ? p.label : it.size, price: it.price,
