@@ -24,9 +24,8 @@ Without either, everything still works: confidence falls back to the rule-based 
 **Load the extension:** `chrome://extensions` → Developer mode → *Load unpacked* → pick `extension/`.
 
 1. Open a product page on a store → click the FitCheck toolbar icon → **Enable on this store** (Chrome's own one-site prompt) or **Just check this page**.
-2. The badge appears next to the store's size buttons. Click it for the card; tap your usual size to personalize.
-3. **Open wardrobe** (from the card or the popup) → **Load demo data** to seed the demo profile ([extension/wardrobe/seed.json](extension/wardrobe/seed.json)).
-4. All badge states, no store needed: `chrome-extension://<id>/demo/states.html`.
+2. The badge appears next to the store's size buttons. Until it knows your size for that category it says *Your size?*: click it and tap your usual size, then how you like things to fit (Slim / Regular / Relaxed). Each is asked once and used on every store.
+3. All badge states, no store needed: `chrome-extension://<id>/demo/states.html`.
 
 ## Before anything else: run the probe
 
@@ -125,9 +124,9 @@ node scripts/extract-fixture.js path/to/saved.html https://store.com/products/x
 
 | Beat | Driven by |
 |---|---|
-| Uniqlo jeans — *Good buy · 29* | stated `men:bottom = 29` in the seed + true-to-size signal |
+| Uniqlo jeans — *Good buy · 29* | tap 29 when the badge asks *Your size?* + true-to-size signal |
 | Click wrong size — *Size up*, both scores | live size-control watcher → re-score → `sizeChange` |
-| A&F jacket — *Likely return* + "you own 2 like this" | seed: A&F XL rated *too small* → baseline past the largest size; two jackets → duplicate alert |
+| A&F jacket — *Likely return* + "you own 2 like this" | wardrobe: add an A&F XL jacket and rate it *Too small* → baseline past the largest size; a second jacket → duplicate alert |
 | Add a Shopify brand live | popup **Enable on this store** or wardrobe **Add store** → one permission prompt → empty config, same pipeline |
 | Three-tap feedback, confidence jumps | rate the Uniqlo jeans *Fit well* → baseline source becomes brand feedback (+16 confidence, Medium → High); open tabs re-score live |
 | Privacy panel | wardrobe tab |

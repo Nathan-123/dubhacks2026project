@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fitting Room setup</title>
+  <link rel="stylesheet" href="../ui/tokens.css">
+  <link rel="stylesheet" href="onboarding.css">
+</head>
+<body>
+  <!-- Garment prints framing the question card. Decorative only. -->
+  <div class="paper" aria-hidden="true"><div class="mosaic" id="mosaic"></div></div>
+
+  <main class="layout">
+    <section class="form" aria-labelledby="title">
+      <header class="masthead">
+        <div class="masthead-row"><span class="brandline">Fitting Room</span><span class="step-count" id="step-count" aria-live="polite">1 of 4</span></div>
+        <h1 id="title">Let’s find your size.</h1>
+        <p class="lede">Four quick questions. Your answers shape every size we suggest.</p>
+      </header>
+
+      <div class="stage" id="stage">
+      <div class="q" data-q="section">
+        <h2 id="q-section">Which section do you shop?</h2>
+        <p class="why">Sizes run differently between sections. We never ask your gender.</p>
+        <div class="choices" role="radiogroup" aria-labelledby="q-section">
+          <button type="button" class="choice" role="radio" aria-checked="false" data-section="men">Men’s</button>
+          <button type="button" class="choice" role="radio" aria-checked="false" data-section="women">Women’s</button>
+          <button type="button" class="choice" role="radio" aria-checked="false" data-section="both">Both</button>
+        </div>
+      </div>
+
+      <div class="q" data-q="body" hidden>
+        <div class="q-head">
+          <h2 id="q-height">How tall are you?</h2>
+          <div class="switch" role="radiogroup" aria-label="Height units">
+            <button type="button" role="radio" aria-checked="true" data-unit="imperial">ft / in</button>
+            <button type="button" role="radio" aria-checked="false" data-unit="metric">cm</button>
+          </div>
+        </div>
+        <p class="why">Reviewers often share their height, so this helps us compare you with people your size.</p>
+        <div class="height-fields" id="height-imperial">
+          <label class="field" for="height-ft"><span>Feet</span>
+            <span class="suffix"><input id="height-ft" inputmode="numeric" autocomplete="off" placeholder="5" aria-describedby="height-error"><i>ft</i></span></label>
+          <label class="field" for="height-in"><span>Inches</span>
+            <span class="suffix"><input id="height-in" inputmode="numeric" autocomplete="off" placeholder="9" aria-describedby="height-error"><i>in</i></span></label>
+        </div>
+        <div class="height-fields" id="height-metric" hidden>
+          <label class="field" for="height-cm"><span>Centimeters</span>
+            <span class="suffix"><input id="height-cm" inputmode="numeric" autocomplete="off" placeholder="175" aria-describedby="height-error"><i>cm</i></span></label>
+        </div>
+        <p class="field-error" id="height-error" role="alert" hidden></p>
+      </div>
+
+      <div class="q" data-q="fit" hidden>
+        <h2 id="q-fit">How do you like things to fit?</h2>
+        <p class="why">This nudges every size pick up or down, so choose how you actually wear things.</p>
+        <input class="fit-range" id="fit" type="range" min="0" max="3" step="1" value="1" aria-labelledby="q-fit" aria-valuetext="Not set">
+        <div class="fit-stops" role="radiogroup" aria-label="Fit">
+          <button type="button" role="radio" aria-checked="false" data-fit="0">Slim</button>
+          <button type="button" role="radio" aria-checked="false" data-fit="1">Regular</button>
+          <button type="button" role="radio" aria-checked="false" data-fit="2">Relaxed</button>
+          <button type="button" role="radio" aria-checked="false" data-fit="3">Oversized</button>
+        </div>
+      </div>
+
+      <div class="q" data-q="anchor" hidden>
+        <h2 id="q-anchor">What fits you best right now?</h2>
+        <p class="why">One piece you own and love. We compare every other brand against it.</p>
+        <div class="switch lg" role="radiogroup" aria-label="Kind of piece">
+          <button type="button" role="radio" aria-checked="true" data-kind="top">Top</button>
+          <button type="button" role="radio" aria-checked="false" data-kind="bottom">Bottom</button>
+        </div>
+        <label class="field" for="brand"><span>Brand</span><input id="brand" autocomplete="off" placeholder="Uniqlo, Levi’s, Zara…"></label>
+        <div class="chips" id="brand-chips"></div>
+        <div id="size-area">
+          <div class="field-label" id="size-label">Size</div>
+          <div class="choices sizes" id="sizes" role="radiogroup" aria-labelledby="size-label"></div>
+          <div id="length-wrap" hidden>
+            <div class="field-label" id="length-label">Length <span class="opt">optional</span></div>
+            <div class="choices sizes" id="lengths" role="radiogroup" aria-labelledby="length-label"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="q done" data-q="done" id="done" hidden tabindex="-1">
+        <h2>You’re set.</h2>
+        <p class="why">Fitting Room is off until you turn it on for a store. Click the toolbar icon on any store and flip the switch. Chrome asks once per store.</p>
+        <ul class="summary" id="summary"></ul>
+        <div class="done-actions">
+          <button type="button" class="btn primary lg forward" id="close">Start shopping</button>
+          <button type="button" class="btn ghost" id="edit">Edit answers</button>
+        </div>
+      </div>
+      </div>
+
+      <footer class="bar">
+        <div class="bar-inner">
+          <div class="progress" aria-live="polite">
+            <svg class="stitch" viewBox="0 0 160 8" aria-hidden="true"><path class="stitch-base" d="M2 4 H158"/><path class="stitch-done" id="stitch" d="M2 4 H158"/></svg>
+            <span id="count">0 of 4 answered</span>
+          </div>
+          <div class="bar-actions">
+            <button type="button" class="btn ghost backward" id="back">Back</button>
+            <button type="button" class="btn ghost" id="skip">Skip</button>
+            <button type="button" class="btn primary lg forward" id="next">Next</button>
+          </div>
+        </div>
+      </footer>
+    </section>
+  </main>
+
+  <script src="../lib/sizes.js"></script>
+  <script src="../lib/profile.js"></script>
+  <script src="../ui/logos.js"></script>
+  <script src="onboarding.js"></script>
+</body>
+</html>

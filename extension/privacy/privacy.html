@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy · Fitting Room</title>
+  <link rel="stylesheet" href="../ui/tokens.css">
+  <style>
+    /* Privacy statement: one readable column, same sheet and type as the closet. */
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+    @media (max-width: 640px) { .wrap { padding: 0 16px; } }
+    .top { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .top a { text-decoration: none; }
+    h1 { margin: 40px 0 10px; font-size: 38px; letter-spacing: -0.04em; }
+    .lede { margin: 0 0 28px; font-size: 16px; color: var(--ink-2); }
+    .sheet { margin-bottom: 16px; padding: 22px 26px; border: 1px solid var(--line); border-radius: var(--radius-sheet); background: var(--surface); box-shadow: var(--shadow-1); }
+    h2 { font-size: 19px; margin-bottom: 8px; }
+    .sheet p, .sheet li { color: var(--ink-2); font-size: 15px; }
+    .sheet p { margin: 0 0 8px; }
+    .sheet ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+    .sheet ul + p { margin-top: 12px; }
+    .updated { font-size: 13px; color: var(--ink-3); }
+  </style>
+</head>
+<body>
+  <header class="wrap top">
+    <span class="brandline">Fitting Room</span>
+    <a class="btn sm" href="../wardrobe/wardrobe.html">Your closet</a>
+  </header>
+
+  <main class="wrap">
+    <h1>Privacy</h1>
+    <p class="lede">Fitting Room helps you pick the right size. Here is exactly what it reads, what it keeps and where anything goes.</p>
+
+    <section class="sheet">
+      <h2>Your closet stays in your browser</h2>
+      <p>Your sizes, height, fit preference, closet pieces, the stores you turn on and the return windows Fitting Room has read are saved in Chrome’s storage for this extension, on this device.</p>
+      <ul>
+        <li>Websites and other extensions can’t read it.</li>
+        <li>There is no account. Nothing is tied to your name, email, address or card.</li>
+      </ul>
+    </section>
+
+    <section class="sheet">
+      <h2>It only runs where you turn it on</h2>
+      <p>Fitting Room is off on every site until you flip its switch for a store. Chrome asks your permission first, once per store. Turning it off removes that permission and reloads the page, so it stops right away.</p>
+    </section>
+
+    <section class="sheet">
+      <h2>What it reads on a store</h2>
+      <ul>
+        <li><b>Product pages:</b> the product name, sizes, size chart, fabric and what reviewers say about fit.</li>
+        <li><b>Order confirmation pages:</b> item names, sizes and prices, so they can join your closet. Email addresses, phone numbers, street addresses and card numbers are removed before anything is saved.</li>
+        <li><b>The store’s return policy page:</b> a public page, read to count down your return window and link back to it.</li>
+      </ul>
+    </section>
+
+    <section class="sheet">
+      <h2>What leaves your browser</h2>
+      <p>Some reading is done by Fitting Room’s server. In this hackathon build that server runs on your own computer. It receives:</p>
+      <ul>
+        <li>Product page text, only when the page can’t be read in the browser.</li>
+        <li>Order items, already cleaned of personal details.</li>
+        <li>Return policy text, only when the wording is unclear.</li>
+        <li>A summary of how much evidence there is (for example, how many reviews mention fit), to rate how sure a size is. No sizes, brands or closet pieces.</li>
+      </ul>
+      <p>The server may pass that text to a free AI model through OpenRouter. Your sizes and closet are not sent, unless you turn on “Score on the backend” under Advanced in your closet. It is off by default.</p>
+    </section>
+
+    <section class="sheet">
+      <h2>What it never does</h2>
+      <ul>
+        <li>No ads, no tracking and no analytics.</li>
+        <li>Your data is never sold or shared.</li>
+        <li>It never reads pages on stores you haven’t turned on.</li>
+      </ul>
+    </section>
+
+    <section class="sheet">
+      <h2>You’re in control</h2>
+      <ul>
+        <li>Turn any store off from the toolbar switch or the Stores list in your closet.</li>
+        <li>Export or delete everything from the Privacy section of your closet.</li>
+        <li>Removing the extension deletes everything it saved.</li>
+      </ul>
+      <p class="updated">Last updated October 18, 2026.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="../ui/footer.js"></script>
+</body>
+</html>

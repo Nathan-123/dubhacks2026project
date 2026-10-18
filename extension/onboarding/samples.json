@@ -1,0 +1,234 @@
+{
+ "_readme": "Sample products for the onboarding preview, extracted from fixtures/pages (synthetic test pages) with extension/lib/extract.js. Every size is marked in stock and none selected so the preview can show any recommendation.",
+ "top": {
+  "url": "https://northbound.example/products/heavyweight-pocket-tee?variant=2",
+  "host": "northbound.example",
+  "capturedAt": "2026-10-17T22:10:00.000Z",
+  "identity": {
+   "brand": "Northbound Supply",
+   "name": "Heavyweight Pocket Tee",
+   "productId": "7012345678",
+   "category": "top",
+   "subcategory": "t-shirt",
+   "section": "men",
+   "cutHint": "boxy"
+  },
+  "sizes": {
+   "system": "alpha",
+   "options": [
+    {
+     "label": "S",
+     "available": true,
+     "selected": false
+    },
+    {
+     "label": "M",
+     "available": true,
+     "selected": false
+    },
+    {
+     "label": "L",
+     "available": true,
+     "selected": false
+    },
+    {
+     "label": "XL",
+     "available": true,
+     "selected": false
+    }
+   ],
+   "selector": "body > main > form > fieldset.product-form__input",
+   "docked": true
+  },
+  "sizeChart": {
+   "kind": "garment",
+   "unit": "in",
+   "rows": [
+    {
+     "size": "S",
+     "pitToPit": 20,
+     "bodyLength": 27
+    },
+    {
+     "size": "M",
+     "pitToPit": 21,
+     "bodyLength": 28
+    },
+    {
+     "size": "L",
+     "pitToPit": 22.5,
+     "bodyLength": 29
+    },
+    {
+     "size": "XL",
+     "pitToPit": 24,
+     "bodyLength": 30
+    }
+   ],
+   "imageOnly": false
+  },
+  "fabric": {
+   "composition": [
+    {
+     "material": "cotton",
+     "pct": 95
+    },
+    {
+     "material": "elastane",
+     "pct": 5
+    }
+   ],
+   "stretch": true
+  },
+  "modelRef": {
+   "heightCm": 185,
+   "sizeWorn": "L"
+  },
+  "reviewFit": {
+   "aggregate": null,
+   "distribution": {
+    "runsSmall": 0.62,
+    "trueToSize": 0.3,
+    "runsLarge": 0.08
+   },
+   "reviewers": [
+    {
+     "heightCm": 178,
+     "weightKg": null,
+     "sizeBought": "M",
+     "fitVerdict": "small"
+    },
+    {
+     "heightCm": null,
+     "weightKg": null,
+     "sizeBought": "L",
+     "fitVerdict": "perfect"
+    },
+    {
+     "heightCm": 170,
+     "weightKg": null,
+     "sizeBought": "S",
+     "fitVerdict": "small"
+    }
+   ],
+   "n": 412
+  },
+  "price": {
+   "amount": 38,
+   "currency": "USD"
+  },
+  "image": "https://cdn.shopify.com/s/files/tee.jpg",
+  "_src": {
+   "identity.brand": "shopifyJson",
+   "identity.name": "shopifyJson",
+   "identity.productId": "shopifyJson",
+   "price": "shopifyJson",
+   "image": "shopifyJson",
+   "sizes.options": "shopifyJson",
+   "identity.category": "shopifyJson",
+   "identity.subcategory": "shopifyJson",
+   "identity.section": "shopifyJson",
+   "sizeChart": "shopifyJson",
+   "fabric": "shopifyJson",
+   "identity.cutHint": "shopifyJson",
+   "reviewFit.distribution": "reviewWidget",
+   "reviewFit.reviewers": "reviewWidget",
+   "modelRef": "dom"
+  }
+ },
+ "bottom": {
+  "url": "https://www.uniqlo.com/us/en/products/E455365-000/00?colorDisplayCode=69",
+  "host": "uniqlo.com",
+  "capturedAt": "2026-10-17T22:10:00.000Z",
+  "identity": {
+   "brand": "Uniqlo",
+   "name": "Selvedge Slim-Fit Jeans",
+   "productId": "E455365-000",
+   "category": "bottom",
+   "subcategory": "jeans",
+   "section": "men",
+   "cutHint": "slim"
+  },
+  "sizes": {
+   "system": "waist",
+   "options": [
+    {
+     "label": "28",
+     "available": true,
+     "selected": false
+    },
+    {
+     "label": "29",
+     "available": true,
+     "selected": false
+    },
+    {
+     "label": "30",
+     "available": true,
+     "selected": false
+    },
+    {
+     "label": "31",
+     "available": true,
+     "selected": false
+    },
+    {
+     "label": "32",
+     "available": true,
+     "selected": false
+    },
+    {
+     "label": "33",
+     "available": true,
+     "selected": false
+    }
+   ],
+   "selector": "html > body > main > div.size-chips",
+   "docked": true
+  },
+  "sizeChart": null,
+  "fabric": {
+   "composition": [
+    {
+     "material": "cotton",
+     "pct": 98
+    },
+    {
+     "material": "elastane",
+     "pct": 2
+    }
+   ],
+   "stretch": true
+  },
+  "modelRef": null,
+  "reviewFit": {
+   "aggregate": {
+    "scale": 0.05,
+    "label": "true to size",
+    "n": 188,
+    "source": "stateBlob"
+   },
+   "distribution": null,
+   "reviewers": null,
+   "n": 188
+  },
+  "price": {
+   "amount": 49.9,
+   "currency": "USD"
+  },
+  "image": null,
+  "_src": {
+   "identity.brand": "stateBlob",
+   "identity.name": "stateBlob",
+   "identity.productId": "stateBlob",
+   "price": "stateBlob",
+   "sizes.options": "stateBlob",
+   "reviewFit.aggregate": "stateBlob",
+   "fabric": "dom",
+   "identity.cutHint": "dom",
+   "identity.category": "dom",
+   "identity.subcategory": "dom",
+   "identity.section": "dom"
+  }
+ }
+}
