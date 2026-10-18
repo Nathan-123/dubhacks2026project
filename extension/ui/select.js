@@ -1,7 +1,7 @@
 'use strict';
 
 /*
- * A dropdown in the Fitting Room style over a native <select>. The select stays the source of truth:
+ * A dropdown in the FittingRoom style over a native <select>. The select stays the source of truth:
  * picking an option sets its value and fires its "change", so existing handlers keep working.
  * Call refresh() after setting the select's value in code.
  *

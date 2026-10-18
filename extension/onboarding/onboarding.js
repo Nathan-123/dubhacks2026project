@@ -313,7 +313,7 @@
     ].filter(Boolean);
     $('summary').innerHTML = rows.length
       ? rows.map((r) => `<li>${r.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)}</li>`).join('')
-      : '<li class="empty">Nothing yet. Fitting Room will ask on product pages when it needs your size.</li>';
+      : '<li class="empty">Nothing yet. FittingRoom will ask on product pages when it needs your size.</li>';
   }
 
   async function advance() {

@@ -1,5 +1,5 @@
 /*
- * Fitting Room backend. Stateless, holds no user data, costs nothing to run. It shares a
+ * FittingRoom backend. Stateless, holds no user data, costs nothing to run. It shares a
  * pre-cache of demo pages, runs the LLM tier on a free local model (Ollama), and makes
  * scoring tunable without reloading the extension.
  *
@@ -186,7 +186,7 @@ function createServer() {
 
 if (require.main === module) {
   createServer().listen(PORT, () => {
-    console.log(`Fitting Room backend on http://localhost:${PORT}`);
+    console.log(`FittingRoom backend on http://localhost:${PORT}`);
     llm.status().then((s) => console.log(s.ok ? `LLM tier ready: ${s.model} via ${s.provider} (free)` : `LLM tier off (${s.provider}): ${s.reason}`));
     confidence.status().then((s) => console.log(s.ok ? `Confidence model ready: ${s.model} via OpenRouter (free)` : `Confidence model off: ${s.reason} — using rule-based confidence`));
   });

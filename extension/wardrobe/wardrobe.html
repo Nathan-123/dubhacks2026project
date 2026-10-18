@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Your closet · Fitting Room</title>
+  <title>Your closet · FittingRoom</title>
   <link rel="stylesheet" href="../ui/tokens.css">
   <link rel="stylesheet" href="wardrobe.css">
 </head>
 <body>
   <header class="top">
     <div class="wrap top-row">
-      <span class="brandline">Fitting Room</span>
+      <span class="brandline">FittingRoom</span>
       <nav class="tabs" aria-label="Sections">
         <a class="btn ghost sm" href="#closet">Closet</a><a class="btn ghost sm" href="#sizes">Sizes</a><a class="btn ghost sm" href="#stores">Stores</a><a class="btn ghost sm" href="#privacy">Privacy</a>
       </nav>
@@ -21,7 +21,7 @@
     <section class="hero" id="closet">
       <div class="hero-copy">
         <h1>Your closet</h1>
-        <p class="lede">Every brand sizes differently. Fitting Room remembers what fit you where, so your next order fits too.</p>
+        <p class="lede">Every brand sizes differently. FittingRoom remembers what fit you where, so your next order fits too.</p>
         <button class="btn primary lg" id="add-open" type="button" aria-expanded="false" aria-controls="add-form">Add something you own</button>
       </div>
       <div class="prints hero-prints" aria-hidden="true">
@@ -33,7 +33,7 @@
 
     <form id="add-form" class="sheet add-form" hidden aria-labelledby="add-h">
       <h2 id="add-h">Add something you own</h2>
-      <p class="hint">A piece that fits you well is the best reference. Fitting Room compares other brands against it.</p>
+      <p class="hint">A piece that fits you well is the best reference. FittingRoom compares other brands against it.</p>
       <div class="form-grid">
         <label>Brand <input name="brand" required placeholder="Uniqlo"></label>
         <label>Item <span class="opt">optional</span> <input name="name" placeholder="Slim jeans"></label>
@@ -100,7 +100,7 @@
 
       <section class="sheet" id="stores" aria-labelledby="st-h">
         <h2 id="st-h">Stores</h2>
-        <p class="hint">Fitting Room only runs on stores you turn on. Your browser asks once per store.</p>
+        <p class="hint">FittingRoom only runs on stores you turn on. Your browser asks once per store.</p>
         <ul id="stores-list" class="list stores"></ul>
         <form id="store-form" class="inline-form">
           <label class="sr" for="store-url">Store address</label>
@@ -113,7 +113,7 @@
     <section class="sheet privacy" id="privacy" aria-labelledby="p-h">
       <div>
         <h2 id="p-h">Your closet stays in this browser</h2>
-        <p class="hint">Nothing here is tied to your name, address or card. <a href="../privacy/privacy.html">Read how Fitting Room handles your data</a>.</p>
+        <p class="hint">Nothing here is tied to your name, address or card. <a href="../privacy/privacy.html">Read how FittingRoom handles your data</a>.</p>
       </div>
       <div class="privacy-actions">
         <button id="export" class="btn" type="button">Export</button>
