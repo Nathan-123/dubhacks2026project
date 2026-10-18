@@ -6,7 +6,7 @@
 importScripts('lib/sizes.js', 'lib/contract.js', 'lib/score.js', 'lib/profile.js');
 const K = self.FitKit;
 
-const CONTENT_FILES = ['lib/sizes.js', 'lib/contract.js', 'lib/score.js', 'lib/classification.js', 'lib/extract.js', 'lib/profile.js', 'content/badge.js', 'content/content.js'];
+const CONTENT_FILES = ['lib/sizes.js', 'lib/contract.js', 'lib/score.js', 'lib/classification.js', 'lib/extract.js', 'lib/profile.js', 'lib/returns.js', 'content/content.js'];
 const SCRIPT_ID = 'fitcheck-stores';
 const DEFAULT_SETTINGS = { backend: 'http://localhost:8787', serverScoring: false, modelConfidence: true };
 const confidenceCache = new Map(); // evidence JSON -> model answer (the server caches too)
@@ -92,6 +92,10 @@ async function injectMatchingTabs(origins) {
 }
 
 chrome.runtime.onInstalled.addListener(registerAll);
+// First install only: setup asks once, then lives in the popup and wardrobe.
+chrome.runtime.onInstalled.addListener(({ reason }) => {
+  if (reason === 'install') chrome.tabs.create({ url: chrome.runtime.getURL('onboarding/onboarding.html') });
+});
 chrome.runtime.onStartup.addListener(registerAll);
 // The popup can close while Chrome's permission prompt is showing, so react here, not there.
 chrome.permissions.onAdded.addListener(async (p) => { await registerAll(); if (p.origins) injectMatchingTabs(p.origins); });
@@ -154,6 +158,7 @@ const handlers = {
     return r && r.recommendation ? r.recommendation : { error: r && r.error };
   },
   async parseOrder({ payload }) { return backend('/parse-order', payload, LLM_TIMEOUT_MS); },
+  async returnPolicy({ text }) { return backend('/return-policy', { text }, LLM_TIMEOUT_MS); },
   async cacheGet({ canonical }) { return cacheGet(canonical); },
   async cachePut({ product }) { await cachePut(product); return { ok: true }; },
   async openWardrobe({ category, pin }) {
@@ -166,12 +171,27 @@ const handlers = {
   async storesChanged() { const origins = await registerAll(); await injectMatchingTabs(origins); return { ok: true, origins }; },
   async runOnce({ tabId }) { return { ok: await injectInto(tabId) }; },
   async clearCache() { await chrome.storage.local.remove(CACHE_KEY); return { ok: true }; },
+  // The page asks once per product, when the shopper first picks a size. Chrome 127+ allows this; when it
+  // refuses (older Chrome, window not focused) the size still shows on the toolbar badge.
+  async openPopup(_msg, sender) {
+    if (!chrome.action.openPopup || !sender.tab) return { ok: false };
+    try { await chrome.action.openPopup({ windowId: sender.tab.windowId }); return { ok: true }; } catch (e) { return { ok: false, error: String(e && e.message || e) }; }
+  },
+  // Each page's result, as the size on the toolbar icon for that tab ("M"); nothing while checking or unsure.
+  async fitUpdate({ view }, sender) {
+    if (!sender.tab) return { ok: false };
+    const size = view && view.status === 'done' && view.rec && view.rec.size;
+    const text = size && String(size).length <= 4 ? String(size) : '';
+    await chrome.action.setBadgeBackgroundColor({ tabId: sender.tab.id, color: '#722e1d' });
+    await chrome.action.setBadgeText({ tabId: sender.tab.id, text });
+    return { ok: true };
+  },
   async health() { const { backend: base } = await settings(); try { const r = await fetch(`${base}/health`); return await r.json(); } catch (_) { return { ok: false }; } },
 };
 
-chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   const h = handlers[msg && msg.type];
   if (!h) return false;
-  h(msg).then(sendResponse, (e) => sendResponse({ ok: false, error: String(e && e.message || e) }));
+  h(msg, sender).then(sendResponse, (e) => sendResponse({ ok: false, error: String(e && e.message || e) }));
   return true; // async response
 });

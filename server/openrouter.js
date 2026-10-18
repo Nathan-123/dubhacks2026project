@@ -30,7 +30,7 @@ async function http(path, { method = 'GET', body, timeoutMs } = {}) {
         'Content-Type': 'application/json',
         ...(process.env.OPENROUTER_API_KEY ? { Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}` } : {}),
         'HTTP-Referer': 'http://localhost:8787',
-        'X-Title': 'FitCheck',
+        'X-Title': 'Fitting Room',
       },
       body: body ? JSON.stringify(body) : undefined,
       signal: ctl.signal,

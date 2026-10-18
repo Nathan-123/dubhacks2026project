@@ -3,140 +3,145 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FitCheck Wardrobe</title>
+  <title>Your closet · Fitting Room</title>
   <link rel="stylesheet" href="../ui/tokens.css">
   <link rel="stylesheet" href="wardrobe.css">
 </head>
 <body>
   <header class="top">
     <div class="wrap top-row">
-      <span class="brandline"><span class="mark" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M10 6.2a1.7 1.7 0 10-1.7-1.7M10 6.2v1.3L3.4 12.3a1 1 0 00.6 1.8h12a1 1 0 00.6-1.8L10 7.5"/></svg></span>FitCheck</span>
+      <span class="brandline">Fitting Room</span>
       <nav class="tabs" aria-label="Sections">
-        <a href="#wardrobe">Wardrobe</a><a href="#sizes">Sizes</a><a href="#stores">Stores</a><a href="#privacy">Privacy</a>
+        <a class="btn ghost sm" href="#closet">Closet</a><a class="btn ghost sm" href="#sizes">Sizes</a><a class="btn ghost sm" href="#stores">Stores</a><a class="btn ghost sm" href="#privacy">Privacy</a>
       </nav>
     </div>
   </header>
 
   <main class="wrap">
-    <section class="intro">
-      <div>
-        <h1>Your fit profile</h1>
-        <p class="lede">Everything FitCheck knows about your sizes. It lives only in this browser, and every rating makes the next recommendation sharper.</p>
+    <section class="hero" id="closet">
+      <div class="hero-copy">
+        <h1>Your closet</h1>
+        <p class="lede">Every brand sizes differently. Fitting Room remembers what fit you where, so your next order fits too.</p>
+        <button class="btn primary lg" id="add-open" type="button" aria-expanded="false" aria-controls="add-form">Add something you own</button>
       </div>
-      <div class="strength card" aria-live="polite">
-        <div class="strength-top"><span>Profile strength</span><b><span id="strength">0</span><small>/100</small></b></div>
-        <div class="meter" role="img" id="strength-meter" aria-label="Profile strength"><i id="strength-bar"></i></div>
-        <div class="next" id="strength-next"></div>
+      <div class="prints hero-prints" aria-hidden="true">
+        <img class="print" src="../onboarding/looks/flannel.jpg" alt="" style="--x:0%;--y:16%;--w:34%;--r:-6deg">
+        <img class="print" src="../onboarding/looks/jeans.jpg" alt="" style="--x:28%;--y:0%;--w:38%;--r:2deg">
+        <img class="print" src="../onboarding/looks/sneakers.jpg" alt="" style="--x:62%;--y:20%;--w:34%;--r:7deg">
       </div>
     </section>
 
-    <section id="pinned" class="card pinned" hidden aria-labelledby="pinned-h">
-      <h2 id="pinned-h" class="eyebrow">Comparing</h2>
+    <form id="add-form" class="sheet add-form" hidden aria-labelledby="add-h">
+      <h2 id="add-h">Add something you own</h2>
+      <p class="hint">A piece that fits you well is the best reference. Fitting Room compares other brands against it.</p>
+      <div class="form-grid">
+        <label>Brand <input name="brand" required placeholder="Uniqlo"></label>
+        <label>Item <span class="opt">optional</span> <input name="name" placeholder="Slim jeans"></label>
+        <label>Size <input name="size" required placeholder="M, 30, 30x32"></label>
+        <label>Kind
+          <select name="category"><option value="top">Top</option><option value="bottom">Bottom</option><option value="outerwear">Outerwear</option><option value="dress">Dress</option><option value="shoes">Shoes</option></select>
+        </label>
+        <label>Section
+          <select name="section"><option value="">Any</option><option value="men">Men’s</option><option value="women">Women’s</option><option value="unisex">Unisex</option></select>
+        </label>
+        <label>Bought <span class="opt">optional</span> <input name="date" type="date"></label>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn primary">Add to closet</button>
+        <button type="button" class="btn ghost" id="add-cancel">Cancel</button>
+      </div>
+    </form>
+
+    <section id="pinned" class="sheet pinned" hidden aria-labelledby="pinned-h">
+      <h2 id="pinned-h">Comparing with your closet</h2>
       <div id="pinned-body"></div>
     </section>
 
-    <section class="card" id="wardrobe" aria-labelledby="w-h">
-      <div class="card-head">
+    <section class="sheet" id="passport" hidden aria-labelledby="pp-h">
+      <h2 id="pp-h">Your size, brand by brand</h2>
+      <p class="hint">What fit you at each brand, piece by piece. Tops, bottoms and jackets often size differently.</p>
+      <ul id="brands" class="brands"></ul>
+    </section>
+
+    <section class="sheet" id="wardrobe" aria-labelledby="w-h">
+      <div class="sheet-head">
         <div>
-          <h2 id="w-h">Wardrobe</h2>
-          <p class="hint">Added from order confirmations on stores you turned on, or by hand. Tell us how each one fit.</p>
+          <h2 id="w-h">Your pieces</h2>
+          <p class="hint">Tell us how each one fit. Every answer makes the next size more accurate.</p>
         </div>
-        <div class="filters" role="group" aria-label="Filter by category" id="filters"></div>
+        <div class="chips" role="group" aria-label="Show" id="filters"></div>
       </div>
       <ul id="items" class="items"></ul>
       <div id="empty" class="empty" hidden>
-        <b>No items yet</b>
-        <span>Check out on a store you turned on, add something you own below, or load the demo profile.</span>
+        <div class="prints empty-prints" aria-hidden="true">
+          <img class="print" src="../onboarding/looks/tee.jpg" alt="" style="--x:6%;--y:10%;--w:44%;--r:-5deg">
+          <img class="print" src="../onboarding/looks/cap.jpg" alt="" style="--x:46%;--y:0%;--w:44%;--r:6deg">
+        </div>
+        <b>Your closet is empty</b>
+        <span>Add something you own, or buy from a store you turned on and it shows up here.</span>
       </div>
-      <details class="disclosure">
-        <summary>Add an item you own</summary>
-        <form id="add-form" class="form-grid">
-          <label>Brand <input name="brand" required placeholder="e.g. Uniqlo"></label>
-          <label>Item <input name="name" placeholder="e.g. Slim jeans"></label>
-          <label>Category
-            <select name="category"><option>top</option><option>bottom</option><option>outerwear</option><option>dress</option><option>shoes</option></select>
-          </label>
-          <label>Section
-            <select name="section"><option value="">Any</option><option value="men">Men</option><option value="women">Women</option><option value="unisex">Unisex</option></select>
-          </label>
-          <label>Size <input name="size" required placeholder="M, 30, 30x32"></label>
-          <label>Bought <input name="date" type="date"></label>
-          <div class="form-actions"><button type="submit" class="btn primary">Add item</button></div>
-        </form>
-      </details>
     </section>
 
     <div class="grid-2">
-      <section class="card" id="sizes" aria-labelledby="s-h">
-        <h2 id="s-h">Your usual sizes</h2>
-        <p class="hint">Set with one tap on any product page. Kept per section and category, never one global size.</p>
+      <section class="sheet" id="sizes" aria-labelledby="s-h">
+        <div class="sheet-head">
+          <div>
+            <h2 id="s-h">Your sizes</h2>
+            <p class="hint">From setup, and from sizes you tap on product pages.</p>
+          </div>
+          <button class="btn ghost sm" id="edit-setup" type="button">Edit setup</button>
+        </div>
+        <div class="answers" id="setup-answers"></div>
         <ul id="stated" class="list"></ul>
-        <label class="field-row">Fit preference <span class="opt-label">optional</span>
-          <select id="pref"><option value="">No preference</option><option value="fitted">Fitted</option><option value="regular">Regular</option><option value="relaxed">Relaxed</option></select>
-        </label>
-        <details class="disclosure">
-          <summary>Reference item measurements</summary>
-          <p class="hint">Measure a garment you love, laid flat. Compared against garment size charts only.</p>
-          <form id="anchor-form" class="form-grid">
-            <label>Category <select name="category"><option>top</option><option>bottom</option><option>outerwear</option><option>dress</option></select></label>
-            <label>Unit <select name="unit"><option>in</option><option>cm</option></select></label>
-            <label>Chest (full) <input name="chest" type="number" step="0.1"></label>
-            <label>Pit to pit <input name="pitToPit" type="number" step="0.1"></label>
-            <label>Body length <input name="bodyLength" type="number" step="0.1"></label>
-            <label>Waist <input name="waist" type="number" step="0.1"></label>
-            <label>Inseam <input name="inseam" type="number" step="0.1"></label>
-            <div class="form-actions"><button type="submit" class="btn">Save measurements</button></div>
-          </form>
-        </details>
+        <div class="field-row"><span id="pref-label">How you like things to fit</span>
+          <select id="pref" aria-labelledby="pref-label"><option value="">No preference</option><option value="fitted">Slim</option><option value="regular">Regular</option><option value="relaxed">Relaxed</option><option value="oversized">Oversized</option></select>
+        </div>
       </section>
 
-      <section class="card" id="stores" aria-labelledby="st-h">
+      <section class="sheet" id="stores" aria-labelledby="st-h">
         <h2 id="st-h">Stores</h2>
-        <p class="hint">FitCheck runs only where you turn it on. Your browser asks once per store.</p>
-        <ul id="stores-list" class="list"></ul>
+        <p class="hint">Fitting Room only runs on stores you turn on. Your browser asks once per store.</p>
+        <ul id="stores-list" class="list stores"></ul>
         <form id="store-form" class="inline-form">
           <label class="sr" for="store-url">Store address</label>
-          <input id="store-url" placeholder="brand.com" required>
-          <button type="submit" class="btn primary">Add store</button>
+          <input id="store-url" placeholder="Another store, like gap.com" required>
+          <button type="submit" class="btn">Add store</button>
         </form>
-        <details class="disclosure">
-          <summary>Advanced</summary>
-          <label class="check"><input type="checkbox" id="model-confidence"> AI confidence scores <span class="opt-label">free OpenRouter model</span></label>
-          <label class="check"><input type="checkbox" id="server-scoring"> Score on the backend <span class="opt-label">for tuning</span></label>
-          <label class="field-row">Backend <input id="backend-url"></label>
-          <p class="hint" id="backend-status"></p>
-        </details>
       </section>
     </div>
 
-    <section class="card privacy" id="privacy" aria-labelledby="p-h">
-      <div class="privacy-grid">
-        <div>
-          <h2 id="p-h">Privacy</h2>
-          <ul class="checks">
-            <li>Only the stores you enable</li>
-            <li>Your data stays on your device</li>
-            <li>Addresses and payment details are never sent</li>
-            <li>Every recommendation explains itself</li>
-            <li>Delete everything in one tap</li>
-          </ul>
-        </div>
-        <div class="privacy-side">
-          <p class="hint">No affiliate links, so there is no reason to shade a recommendation. AI confidence scores see only a summary of the evidence (how many reviews, which kinds of data), never your sizes or wardrobe. One profile per browser profile.</p>
-          <div class="actions">
-            <button id="delete-all" class="btn danger" type="button">Delete everything</button>
-            <button id="export" class="btn" type="button">Export my data</button>
-            <button id="seed" class="btn ghost" type="button">Load demo profile</button>
-          </div>
-        </div>
+    <section class="sheet privacy" id="privacy" aria-labelledby="p-h">
+      <div>
+        <h2 id="p-h">Your closet stays in this browser</h2>
+        <p class="hint">Nothing here is tied to your name, address or card. <a href="../privacy/privacy.html">Read how Fitting Room handles your data</a>.</p>
+      </div>
+      <div class="privacy-actions">
+        <button id="export" class="btn" type="button">Export</button>
+        <button id="delete-all" class="btn danger" type="button">Delete everything</button>
       </div>
     </section>
+
+    <details class="disclosure advanced">
+      <summary>Advanced</summary>
+      <div class="advanced-body">
+        <label class="check"><input type="checkbox" id="model-confidence"> AI confidence scores <span class="opt">free OpenRouter model</span></label>
+        <label class="check"><input type="checkbox" id="server-scoring"> Score on the backend <span class="opt">for tuning</span></label>
+        <label class="field-row">Backend <input id="backend-url"></label>
+        <p class="hint" id="backend-status"></p>
+        <ul class="list" id="store-configs"></ul>
+      </div>
+    </details>
   </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
 
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="../lib/sizes.js"></script>
   <script src="../lib/profile.js"></script>
+  <script src="../ui/logos.js"></script>
+  <script src="../ui/select.js"></script>
+  <script src="../ui/footer.js"></script>
   <script src="wardrobe.js"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
 
-const { score } = require('../extension/lib/score.js');
+const { score, popupView } = require('../extension/lib/score.js');
 const profileMod = require('../extension/lib/profile.js');
 const { runCase } = require('../scripts/extract-fixture.js');
 
@@ -191,6 +191,47 @@ test('deleting everything reverts to rung 0 immediately', async () => {
   assert.equal(run(p, profileMod.apply(prof, { type: 'deleteAll' })).personalized, false);
 });
 
+test('after the size, asks once how the shopper likes things to fit', async () => {
+  const prof = profileWith([{ type: 'setUsualSize', section: 'men', category: 'top', label: 'M', system: 'alpha' }]);
+  const rec = run(await product('shopify-tee'), prof);
+  assert.equal(rec.personalized, true);
+  assert.equal(rec.ask.type, 'fitPreference');
+  assert.deepEqual(rec.ask.options, ['Slim', 'Regular', 'Relaxed', 'Oversized']);
+  assert.deepEqual(rec.ask.values, ['fitted', 'regular', 'relaxed', 'oversized']);
+});
+
+test('a saved or dismissed fit preference is not asked again', async () => {
+  const prof = profileWith([
+    { type: 'setUsualSize', section: 'men', category: 'top', label: 'M', system: 'alpha' },
+    { type: 'setPreference', preference: 'regular' },
+  ]);
+  assert.equal(run(await product('shopify-tee'), prof).ask, null);
+  const noPref = profileWith([{ type: 'setUsualSize', section: 'men', category: 'top', label: 'M', system: 'alpha' }]);
+  assert.equal(run(await product('shopify-tee'), noPref, { prefDismissed: true }).ask, null);
+});
+
+test('a missing category size is asked before fit preference', () => {
+  const prof = profileWith([{ type: 'setUsualSize', section: 'men', category: 'top', label: 'M', system: 'alpha' }]);
+  assert.equal(run(jacket(), prof).ask.type, 'usualSize');
+});
+
+test('relaxed fit aims larger than slim fit', async () => {
+  const p = await product('shopify-tee');
+  const withPref = (preference) => profileWith([
+    { type: 'setUsualSize', section: 'men', category: 'top', label: 'M', system: 'alpha' },
+    { type: 'setPreference', preference },
+  ]);
+  assert.ok(run(p, withPref('relaxed')).why.target > run(p, withPref('fitted')).why.target);
+  assert.ok(run(p, withPref('oversized')).why.target > run(p, withPref('relaxed')).why.target);
+});
+
+test('the onboarding best-fitting piece personalizes other brands', async () => {
+  const prof = profileWith([{ type: 'setAnchorItem', item: { brand: 'Uniqlo', category: 'top', section: 'men', size: 'M' } }]);
+  const rec = run(await product('shopify-tee'), prof);
+  assert.equal(rec.personalized, true);
+  assert.equal(rec.why.baseline.label, 'M');
+});
+
 test('dismissing the usual-size ask hides it', async () => {
   const rec = run(await product('shopify-tee'), {}, { askDismissed: true });
   assert.equal(rec.ask, null);
@@ -203,10 +244,11 @@ test('recent feedback outweighs old feedback', () => {
   assert.equal(rec.size, 'L');
 });
 
-test('every recommendation explains itself in one sentence', async () => {
+test('every recommendation explains itself in one sentence, except "No fit data yet", whose title says it all', async () => {
   for (const name of ['shopify-tee', 'next-jeans', 'indie-select']) {
     const rec = run(await product(name), profileWith([{ type: 'setUsualSize', section: 'men', category: 'top', label: 'M' }]));
-    assert.ok(rec.reason && rec.reason.length > 10, `${name} reason`);
+    if (rec.verdict === 'No fit data yet') assert.equal(rec.reason, '', `${name} reason`);
+    else assert.ok(rec.reason && rec.reason.length > 10, `${name} reason`);
   }
 });
 
@@ -251,4 +293,13 @@ test('a model confidence override replaces the rules number and is recorded', as
   assert.equal(rec.why.confidenceSource.kind, 'model');
   assert.equal(rec.why.confidenceSource.rules, rules.confidence);
   assert.ok(!/"29"/.test(JSON.stringify(rec.evidence)), 'evidence sent to a model carries no sizes');
+});
+
+test('the popup view turns a recommendation into its card title and subtitle', () => {
+  assert.deepEqual(
+    { ...popupView({ state: 'goodBuy', size: 'M', fit: 88, fitLabel: 'Great fit', verdict: 'Good buy · M' }) },
+    { state: 'goodBuy', size: 'M', title: 'Good buy', sub: 'Great fit · 88/100 for you', reason: '', personalized: false, confidenceLabel: null, alert: null, ask: null },
+  );
+  assert.equal(popupView({ state: 'lowConfidence' }).title, 'No fit data yet');
+  assert.equal(popupView({ state: 'sizeChange', verdict: 'Size down to S', selected: 'M' }).sub, 'Better than the M you picked');
 });

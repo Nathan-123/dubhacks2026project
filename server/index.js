@@ -1,5 +1,5 @@
 /*
- * FitCheck backend. Stateless, holds no user data, costs nothing to run. It shares a
+ * Fitting Room backend. Stateless, holds no user data, costs nothing to run. It shares a
  * pre-cache of demo pages, runs the LLM tier on a free local model (Ollama), and makes
  * scoring tunable without reloading the extension.
  *
@@ -120,6 +120,17 @@ async function parseOrder(body) {
   }
 }
 
+// A store's return window, when the extension could not read it plainly from the policy page.
+async function returnPolicy(body) {
+  if (!body.text) return [400, { ok: false, error: 'no policy text' }];
+  try {
+    const policy = await llm.returnPolicy({ text: body.text });
+    return policy ? [200, { ok: true, ...policy }] : [200, { ok: false, error: 'no clear return window' }];
+  } catch (_) {
+    return [503, { ok: false, error: 'llm unavailable' }];
+  }
+}
+
 async function modelConfidence(body) {
   const out = await confidence.estimate(body.evidence);
   return [out.ok ? 200 : 503, out];
@@ -130,6 +141,7 @@ const ROUTES = {
   'POST /extract-product': extractProduct,
   'POST /score-fit': scoreFit,
   'POST /parse-order': parseOrder,
+  'POST /return-policy': returnPolicy,
   'GET /health': async () => [200, { ok: true, llm: await llm.status(), confidence: await confidence.status(), cacheEntries: fs.readdirSync(CACHE_DIR).filter((f) => f.endsWith('.json')).length }],
 };
 
@@ -174,7 +186,7 @@ function createServer() {
 
 if (require.main === module) {
   createServer().listen(PORT, () => {
-    console.log(`FitCheck backend on http://localhost:${PORT}`);
+    console.log(`Fitting Room backend on http://localhost:${PORT}`);
     llm.status().then((s) => console.log(s.ok ? `LLM tier ready: ${s.model} via ${s.provider} (free)` : `LLM tier off (${s.provider}): ${s.reason}`));
     confidence.status().then((s) => console.log(s.ok ? `Confidence model ready: ${s.model} via OpenRouter (free)` : `Confidence model off: ${s.reason} — using rule-based confidence`));
   });

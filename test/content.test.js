@@ -26,8 +26,8 @@ function usual(label) {
   return profile.apply(profile.emptyProfile(), { type: 'setUsualSize', label, system: 'alpha', category: 'top', section: 'men' });
 }
 
-async function page({ settings = { modelConfidence: false }, initialProduct = product(), initialLiveOptions } = {}) {
-  const { document } = parseHTML('<html><head><title>Store</title></head><body></body></html>');
+async function page({ settings = { modelConfidence: false }, initialProduct = product(), initialLiveOptions, initialProfile = usual('M') } = {}) {
+  const { document } = parseHTML('<html><head><title>Store</title></head><body><div class="sizes"></div></body></html>');
   const listeners = {};
   const location = new URL('https://store.example/products/A');
   const requests = [];
@@ -35,29 +35,26 @@ async function page({ settings = { modelConfidence: false }, initialProduct = pr
   let clock = 0;
   let nextTimer = 0;
   let storageChanged;
-  let callbacks;
-  let visible = null;
+  let popupListener;
+  const updates = [];
+  const sent = [];
+  let shown = null;
   let result = { ok: true, product: initialProduct };
   let liveOptions = initialLiveOptions || result.product.sizes.options;
-  const renders = [];
+  const published = [];
+  const dispatched = [];
+  const session = new Map();
+  let saved = initialProfile;
   const K = {
-    contract, score,
-    profile: { ...profile, load: async () => usual('M') },
+    contract,
+    // Every result the popup is sent goes through score.popupView, so watch it there.
+    score: { ...score, popupView: (rec) => { shown = clone(rec); published.push(shown); return score.popupView(rec); } },
+    profile: { ...profile, load: async () => saved, dispatch: async (e) => { dispatched.push(e); saved = profile.apply(saved, e); return saved; } },
     extract: {
       extract: async () => clone(result),
       findSizeControl: () => ({ options: liveOptions }),
       jsonLdNodes: () => [], trimmedText: () => '', applyFallbacks: () => {},
     },
-    badge: { create: (options) => {
-      callbacks = options;
-      const host = { isConnected: false };
-      return {
-        host,
-        mount: () => { host.isConnected = true; },
-        destroy: () => { host.isConnected = false; visible = null; },
-        render: (rec) => { visible = clone(rec); renders.push(visible); },
-      };
-    } },
   };
   const context = {
     FitKit: K, document, location, structuredClone,
@@ -66,11 +63,11 @@ async function page({ settings = { modelConfidence: false }, initialProduct = pr
       runtime: { sendMessage: (message, callback) => {
         if (message.type === 'getContext') return callback({ config: {}, brandPriors: {}, settings });
         if (['scoreServer', 'modelConfidence'].includes(message.type)) requests.push({ ...message, callback });
-        else callback(null);
-      } },
+        else { sent.push(message.type); if (message.type === 'fitUpdate') updates.push(clone(message.view)); callback(null); }
+      }, onMessage: { addListener: (fn) => { popupListener = fn; } } },
       storage: { onChanged: { addListener: (fn) => { storageChanged = fn; } } },
     },
-    sessionStorage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
+    sessionStorage: { getItem: (k) => (session.has(k) ? session.get(k) : null), setItem: (k, v) => session.set(k, v), removeItem: (k) => session.delete(k) },
     MutationObserver: class { observe() {} disconnect() {} },
     setTimeout: (fn, ms) => { const id = ++nextTimer; timers.set(id, { fn, at: clock + ms }); return id; },
     clearTimeout: (id) => timers.delete(id), setInterval: () => {},
@@ -78,8 +75,11 @@ async function page({ settings = { modelConfidence: false }, initialProduct = pr
   vm.runInNewContext(source, context);
   await flush();
   return {
-    requests, renders,
-    get visible() { return visible; },
+    requests, published, dispatched, updates, document, sent,
+    // The result the popup currently shows: none while pending, on a silent page or an unreadable one.
+    get visible() { const v = updates.at(-1); return v && v.status === 'done' ? shown : null; },
+    // What the popup sees: it asks for the current view and can answer or retry.
+    async popup(type, extra) { let res; popupListener({ type, ...extra }, {}, (r) => { res = r; }); await flush(); return res; },
     async advance(ms) {
       const end = clock + ms;
       while (true) {
@@ -111,7 +111,9 @@ async function page({ settings = { modelConfidence: false }, initialProduct = pr
       document.dispatchEvent(new document.defaultView.Event('change'));
       await flush();
     },
-    async retry() { callbacks.onRetry(); await flush(); },
+    retry() { return this.popup('fitRetry'); },
+    answer(label) { return this.popup('fitAnswer', { label }); },
+    dismissAsk() { return this.popup('fitDismissAsk'); },
   };
 }
 
@@ -119,6 +121,26 @@ test('normal scoring renders the current product verdict', async () => {
   const p = await page();
   assert.equal(p.visible.product.name, 'A');
   assert.equal(p.visible.verdict, score.score(product(), usual('M')).verdict);
+});
+
+test('the size answer is followed by the fit question, and its answer is saved', async () => {
+  const p = await page({ initialProfile: profile.emptyProfile() });
+  assert.equal(p.visible.ask.type, 'usualSize');
+  await p.answer('M');
+  assert.equal(p.visible.ask.type, 'fitPreference');
+  await p.answer('Relaxed');
+  assert.deepEqual(clone(p.dispatched.at(-1)), { type: 'setPreference', preference: 'relaxed' });
+  assert.equal(p.visible.ask, null);
+});
+
+test('not now on the fit question does not hide a later size question', async () => {
+  const p = await page();
+  assert.equal(p.visible.ask.type, 'fitPreference');
+  await p.dismissAsk();
+  assert.equal(p.visible.ask, null);
+  // Profile without a men's top size; non-empty, so the dismissals are kept.
+  await p.changeProfile(profile.apply(profile.emptyProfile(), { type: 'setUsualSize', label: 'S', system: 'alpha', category: 'top', section: 'women' }));
+  assert.equal(p.visible.ask.type, 'usualSize');
 });
 
 for (const mode of ['server', 'model']) {
@@ -140,11 +162,11 @@ for (const mode of ['server', 'model']) {
   test(`${mode} scoring still rejects an old response after a product path change`, async () => {
     const p = await page({ settings: { serverScoring: mode === 'server', modelConfidence: mode === 'model' } });
     await p.navigate({ ok: true, product: product('B') });
-    const count = p.renders.length;
+    const count = p.published.length;
     await p.respond(0, mode === 'server'
       ? score.score(product(), usual('M'))
       : { ok: true, confidence: 99, reason: 'Old evidence' });
-    assert.equal(p.renders.length, count);
+    assert.equal(p.published.length, count);
     await p.advance(700);
     await p.respond(1, mode === 'server'
       ? score.score(product('B'), usual('M'))
@@ -200,9 +222,9 @@ test('the new product renders normally and an older product cannot overwrite it'
 test('obsolete server failure cannot show model pending while the next page settles', async () => {
   const p = await page({ settings: { serverScoring: true } });
   await p.navigate({ silent: true });
-  const count = p.renders.length;
+  const count = p.published.length;
   await p.respond(0, null);
-  assert.equal(p.renders.length, count);
+  assert.equal(p.published.length, count);
   assert.equal(p.requests.length, 1, 'obsolete work must not request model confidence');
   await p.advance(700);
   assert.equal(p.visible, null);
@@ -212,11 +234,11 @@ test('delayed model confidence cannot replace an unreadable page verdict', async
   const p = await page({ settings: { modelConfidence: true } });
   await p.navigate({ ok: false, missing: contract.FLOOR, product: null });
   await p.advance(700);
-  assert.equal(p.visible.state, 'failed');
-  const verdict = p.visible.verdict;
+  assert.equal(p.visible, null);
+  assert.equal(p.updates.at(-1).status, 'failed');
+  const failedView = p.updates.at(-1);
   await p.respond(0, { ok: true, confidence: 95, reason: 'Strong evidence' });
-  assert.equal(p.visible.verdict, verdict);
-  assert.equal(p.visible.state, 'failed');
+  assert.deepEqual(p.updates.at(-1), failedView);
 });
 
 test('older server scoring cannot overwrite a newer profile verdict', async () => {
@@ -250,9 +272,9 @@ test('size edits do not mutate an already submitted server product', async () =>
 test('a changed size invalidates in-flight scoring before the live-control debounce ends', async () => {
   const p = await page({ settings: { serverScoring: true, modelConfidence: false } });
   await p.select('S', false);
-  const count = p.renders.length;
+  const count = p.published.length;
   await p.respond(0, score.score(product(), usual('M')));
-  assert.equal(p.renders.length, count);
+  assert.equal(p.published.length, count);
   await p.advance(120);
   await p.respond(1, score.score(p.requests[1].product, usual('M')));
   assert.equal(p.visible.selected, 'S');
@@ -263,9 +285,9 @@ test('forced extraction invalidates scoring even on the same URL', async () => {
   await p.respond(0, score.score(product(), usual('M')));
   await p.changeProfile(usual('S'));
   await p.retry();
-  const count = p.renders.length;
+  const count = p.published.length;
   await p.respond(1, score.score(product(), usual('S')));
-  assert.equal(p.renders.length, count);
+  assert.equal(p.published.length, count);
   await p.respond(2, score.score(product(), usual('S')));
   assert.equal(p.visible.size, 'S');
 });
@@ -273,9 +295,9 @@ test('forced extraction invalidates scoring even on the same URL', async () => {
 test('availability changes block an old model answer before the live-control debounce ends', async () => {
   const p = await page({ settings: { modelConfidence: true } });
   await p.sellOut('M');
-  const count = p.renders.length;
+  const count = p.published.length;
   await p.respond(0, { ok: true, confidence: 90, reason: 'Old evidence' });
-  assert.equal(p.renders.length, count);
+  assert.equal(p.published.length, count);
   await p.advance(120);
   await p.respond(1, { ok: true, confidence: 65, reason: 'Current evidence' });
   assert.notEqual(p.visible.size, 'M');
@@ -287,9 +309,9 @@ test('model timeout renders current rules and a late answer cannot replace them'
   await p.advance(3000);
   assert.equal(p.visible.confidence, score.score(product(), usual('M')).confidence);
   assert.equal(p.visible.why.confidenceSource.kind, 'rules');
-  const count = p.renders.length;
+  const count = p.published.length;
   await p.respond(0, { ok: true, confidence: 99, reason: 'Too late' });
-  assert.equal(p.renders.length, count);
+  assert.equal(p.published.length, count);
   assert.equal(p.visible.why.confidenceSource.kind, 'rules');
 });
 
@@ -298,4 +320,44 @@ test('malformed confidence falls back to the unchanged rule-based verdict', asyn
   await p.respond(0, { ok: false, error: 'bad_model_output' });
   assert.equal(p.visible.confidence, score.score(product(), usual('M')).confidence);
   assert.equal(p.visible.why.confidenceSource.kind, 'rules');
+});
+
+test('the popup gets the current result as a view of its store card', async () => {
+  const p = await page();
+  const { view } = await p.popup('fitState');
+  assert.equal(view.status, 'done');
+  assert.equal(p.visible.verdict, 'Good buy · M');
+  assert.equal(view.rec.title, 'Good buy');
+  assert.equal(view.rec.size, score.score(product(), usual('M')).size);
+  assert.deepEqual(p.updates.at(-1), clone(view));
+});
+
+test('the popup can answer the size question and sees the personalized result', async () => {
+  const p = await page({ initialProfile: profile.emptyProfile() });
+  assert.deepEqual((await p.popup('fitState')).view.rec.ask.options.length > 0, true);
+  await p.popup('fitAnswer', { label: 'M' });
+  assert.deepEqual(clone(p.dispatched.at(-1)).label, 'M');
+  assert.equal(p.updates.at(-1).status, 'done');
+  assert.equal(p.updates.at(-1).rec.personalized, true);
+});
+
+test('the store page itself is never changed; the result only goes to the popup', async () => {
+  const p = await page();
+  await p.select('S');
+  assert.equal(p.document.documentElement.outerHTML, '<html><head><title>Store</title></head><body><div class="sizes"></div></body></html>');
+  assert.equal((await p.popup('fitState')).view.status, 'done');
+});
+
+test('picking a size opens the popup once per product; just viewing the page does not', async () => {
+  const p = await page();
+  const opens = () => p.sent.filter((t) => t === 'openPopup').length;
+  assert.equal(opens(), 0, 'no size picked yet');
+  await p.select('S');
+  assert.equal(opens(), 1);
+  await p.select('L');
+  assert.equal(opens(), 1, 'more size picks on the same product stay quiet');
+  await p.navigate({ ok: true, product: product('B') });
+  await p.advance(700);
+  await p.select('S');
+  assert.equal(opens(), 2, 'a new product offers again');
 });

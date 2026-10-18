@@ -2,49 +2,105 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>FitCheck</title>
+  <title>Fitting Room</title>
   <link rel="stylesheet" href="../ui/tokens.css">
   <style>
-    body { width: 320px; margin: 0; }
-    header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 12px; border-bottom: 1px solid var(--line); }
-    main { padding: 14px 16px 16px; }
-    .site { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
-    .avatar { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: var(--subtle); font-weight: 700; font-size: 16px; color: var(--ink-2); text-transform: uppercase; flex: none; }
-    .site .host { font-weight: 650; font-size: 14px; word-break: break-all; }
-    .actions { display: grid; gap: 8px; margin-top: 12px; }
-    .actions .btn { width: 100%; }
-    .note { margin: 10px 0 0; font-size: 12px; color: var(--ink-3); line-height: 1.45; }
-    .status-list { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); display: grid; gap: 8px; }
-    .status-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; }
-    .status-row .k { color: var(--ink-2); }
-    .status-row .v { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 550; }
+    /* Popup. Same brand as setup and the closet: prints up top, one white sheet, red for the one primary action. */
+    body { width: 340px; }
+    header { position: relative; height: 84px; padding: 18px 18px 0; overflow: hidden; }
+    header .prints { position: absolute; top: 10px; right: 8px; width: 120px; height: 80px; }
+    main { padding: 0 14px 14px; }
+    .sheet { position: relative; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-sheet); background: var(--surface); box-shadow: var(--shadow-1); }
+    .site { display: flex; align-items: center; gap: 12px; }
+    .site .name { flex: 1; font-weight: 800; font-size: 16px; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+    /* The switch explains itself on hover or keyboard focus; screen readers get the same words as its description. */
+    .tip-wrap { position: relative; display: inline-flex; }
+    .tip { position: absolute; top: calc(100% + 8px); right: -4px; z-index: 2; width: max-content; max-width: 220px; padding: 7px 10px; border-radius: var(--radius-input); background: var(--ink); color: var(--on-ink); font-size: 12px; line-height: 1.4; opacity: 0; transform: translateY(-3px); pointer-events: none; transition: opacity .25s var(--ease-soft), transform .25s var(--ease-soft); }
+    .tip-wrap:hover .tip, .toggle:focus-visible + .tip { opacity: 1; transform: none; transition-delay: .15s; }
+    .sheet { overflow: hidden; }
+    .result { margin-top: 16px; }
+    .checking { display: flex; gap: 12px; align-items: center; }
+    .skel { display: block; height: 12px; border-radius: 999px; background: linear-gradient(90deg, var(--subtle) 30%, #faf9f8 50%, var(--subtle) 70%); background-size: 300% 100%; animation: shimmer 1.6s var(--ease-soft) infinite; }
+    .skel.tile { width: 56px; height: 56px; flex: none; }
+    .skel-lines { flex: 1; display: grid; gap: 8px; }
+    .skel.short { width: 55%; }
+    .checking-note { margin: 12px 0 0; font-size: 12.5px; color: var(--ink-3); }
+    @keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+    @media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
+    /* The size is set like a garment tag: large type, no shape around it. A guess is grey; no size, no tag. */
+    .verdict { display: flex; gap: 16px; align-items: center; }
+    .verdict .size { flex: none; min-width: 40px; font-weight: 600; font-size: 42px; line-height: .9; letter-spacing: -0.02em; }
+    .verdict.guess .size { color: var(--ink-3); }
+    .verdict.none .size { display: none; }
+    .verdict b { display: block; font-size: 17px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.25; }
+    .verdict .sub { display: block; margin-top: 2px; font-size: 12.5px; color: var(--ink-3); }
+    .reason { margin: 12px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+    .confidence { margin-top: 10px; }
+    .r-alert { margin: 12px 0 0; padding: 10px 12px; border-radius: var(--radius-card); background: var(--caution-soft); font-size: 12.5px; line-height: 1.45; }
+    .r-ask { display: grid; gap: 10px; margin-top: 14px; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--bg); }
+    .r-ask b { font-size: 14px; }
+    .r-ask .btn { justify-self: start; margin: -4px 0 -6px -10px; }
+    .result .retry { margin-top: 12px; }
+    .sizes { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+    .sizes-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; }
+    .fit-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .fit-pills .pill { height: 28px; padding: 0 12px; font-size: 12.5px; color: var(--ink); }
+    .fit-pills .empty { font-size: 12.5px; color: var(--ink-3); }
+    .note { margin: 12px 4px 0; font-size: 12px; color: var(--ink-3); line-height: 1.5; }
+    .alert { display: flex; gap: 8px; align-items: baseline; margin: 10px 4px 0; font-size: 12px; color: var(--ink-2); line-height: 1.45; }
+    .alert .dot { transform: translateY(-1px); }
+    .closet { width: 100%; margin-top: 10px; }
   </style>
 </head>
 <body>
   <header>
-    <span class="brandline"><span class="mark" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M10 6.2a1.7 1.7 0 10-1.7-1.7M10 6.2v1.3L3.4 12.3a1 1 0 00.6 1.8h12a1 1 0 00.6-1.8L10 7.5"/></svg></span>FitCheck</span>
-    <button class="btn ghost sm" id="wardrobe" type="button">Wardrobe</button>
+    <span class="brandline">Fitting Room</span>
+    <div class="prints" aria-hidden="true">
+      <img class="print" src="../onboarding/looks/jeans.jpg" alt="" style="--x:4px;--y:14px;--w:42px;--r:-8deg">
+      <img class="print" src="../onboarding/looks/tee.jpg" alt="" style="--x:38px;--y:2px;--w:46px;--r:3deg">
+      <img class="print" src="../onboarding/looks/sneakers.jpg" alt="" style="--x:76px;--y:16px;--w:40px;--r:9deg">
+    </div>
   </header>
   <main>
-    <div class="site">
-      <div class="avatar" id="avatar" aria-hidden="true">·</div>
-      <div style="min-width:0">
-        <div class="host" id="host">—</div>
-        <span class="pill" id="status"><span class="dot"></span><span id="status-text">Checking…</span></span>
+    <section class="sheet" aria-labelledby="name">
+      <div class="site">
+        <span id="logo"><span class="logo letter" aria-hidden="true">·</span></span>
+        <div class="name" id="name">Loading…</div>
+        <span class="tip-wrap" id="toggle-wrap" hidden>
+          <button class="toggle" id="toggle" type="button" role="switch" aria-checked="false" aria-labelledby="name" aria-describedby="site-state"></button>
+          <span class="tip" id="site-state" role="tooltip"></span>
+        </span>
       </div>
-    </div>
-    <div class="actions">
-      <button class="btn primary" id="enable" type="button" hidden>Turn on for this store</button>
-      <button class="btn" id="once" type="button" hidden>Just check this page</button>
-      <button class="btn ghost" id="disable" type="button" hidden>Turn off for this store</button>
-    </div>
-    <p class="note" id="note">FitCheck only runs on stores you turn on. Your browser asks once per store, and your sizes never leave this device.</p>
-    <div class="status-list" aria-label="Service status">
-      <div class="status-row"><span class="k">Backend</span><span class="v" id="s-backend"><span class="dot"></span>—</span></div>
-      <div class="status-row"><span class="k">Page reader (AI)</span><span class="v" id="s-llm"><span class="dot"></span>—</span></div>
-      <div class="status-row"><span class="k">Confidence model</span><span class="v" id="s-conf"><span class="dot"></span>—</span></div>
-    </div>
+      <div class="result" id="result" hidden aria-live="polite">
+        <div id="checking">
+          <div class="checking" aria-hidden="true"><span class="skel tile"></span><span class="skel-lines"><span class="skel"></span><span class="skel short"></span></span></div>
+          <p class="checking-note">Reading the sizes and reviews on this page…</p>
+        </div>
+        <div id="answer" hidden>
+          <div class="verdict" id="verdict"><span class="size" id="r-size"></span><div><b id="r-title"></b><span class="sub" id="r-sub"></span></div></div>
+          <p class="reason" id="r-reason"></p>
+          <span class="pill confidence" id="r-confidence" hidden></span>
+          <p class="r-alert" id="r-alert" hidden></p>
+          <div class="r-ask" id="r-ask" hidden>
+            <b id="r-q"></b>
+            <div class="choices sm" id="r-opts" role="group" aria-labelledby="r-q"></div>
+            <button class="btn ghost sm" id="r-skip" type="button">Not now</button>
+          </div>
+          <button class="btn sm retry" id="r-retry" type="button" hidden>Try again</button>
+        </div>
+      </div>
+      <div class="sizes">
+        <div class="sizes-head"><span>Your sizes</span><button class="btn ghost sm" id="edit-fit" type="button">Edit</button></div>
+        <div class="fit-pills" id="fit-pills" aria-label="Your sizes"></div>
+      </div>
+    </section>
+    <p class="note"><span id="note">Fitting Room only runs on stores you turn on, and your sizes stay in this browser.</span> <a href="../privacy/privacy.html" target="_blank">Privacy</a></p>
+    <p class="alert" id="offline" hidden><span class="dot warn"></span>Can’t reach Fitting Room right now, so sizes may be a little less precise.</p>
+    <button class="btn closet" id="wardrobe" type="button">Open your closet</button>
   </main>
+  <script src="../lib/sizes.js"></script>
+  <script src="../lib/profile.js"></script>
+  <script src="../ui/logos.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

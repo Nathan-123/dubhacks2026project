@@ -8,7 +8,7 @@
 (function (root) {
   'use strict';
 
-  const PRODUCT_NAME = 'FitCheck';
+  const PRODUCT_NAME = 'Fitting Room';
 
   // 20x20 line icons, drawn at 1.8px.
   const ICONS = {
@@ -43,27 +43,19 @@
   const CSS = `
   :host { all: initial; }
   * { box-sizing: border-box; }
+  /* Same palette as ../ui/tokens.css (light only): white and ink, the photos' red as the one accent. */
   .root {
-    --surface: #ffffff; --raised: #ffffff; --subtle: #f6f7f9; --line: #e7e9ee; --line-2: #d9dce3;
-    --ink: #101216; --ink-2: #474c57; --ink-3: #7d828d; --focus: #3b5bfd;
-    --brand-a: #5146ff; --brand-b: #8b5cf6;
+    --surface: #ffffff; --raised: #ffffff; --subtle: #f2f1ef; --line: #e6e3df; --line-2: #cfcac5;
+    --ink: #16181d; --ink-2: #4a4f57; --ink-3: #6b7078; --on-ink: #f7f8f5; --focus: #16181d;
+    --accent: #722e1d; --accent-soft: #f5e9e5;
     --good: #0f7a3f; --good-soft: #e9f7ef; --caution: #a15c00; --caution-soft: #fff4df;
-    --action: #2449d8; --action-soft: #ebf0ff; --bad: #b42318; --bad-soft: #fdeeec;
-    --neutral: #4b505b; --neutral-soft: #f1f2f5; --muted: #6b707b; --muted-soft: #f3f4f6;
-    --shadow-1: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.10);
-    --shadow-2: 0 12px 32px -8px rgba(16,24,40,.22), 0 4px 10px -4px rgba(16,24,40,.10);
-    font: 400 13px/1.45 ui-sans-serif, system-ui, -apple-system, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    color: var(--ink); -webkit-font-smoothing: antialiased; letter-spacing: -0.003em;
-  }
-  @media (prefers-color-scheme: dark) {
-    .root {
-      --surface: #17181c; --raised: #1d1f24; --subtle: #22242a; --line: #2c2f36; --line-2: #3a3e47;
-      --ink: #f2f3f5; --ink-2: #b9bdc6; --ink-3: #8a8f99; --focus: #8ea2ff;
-      --good: #4ad086; --good-soft: rgba(74,208,134,.12); --caution: #f2b13c; --caution-soft: rgba(242,177,60,.13);
-      --action: #8ea2ff; --action-soft: rgba(142,162,255,.14); --bad: #ff8a80; --bad-soft: rgba(255,138,128,.13);
-      --neutral: #c3c7cf; --neutral-soft: rgba(195,199,207,.10); --muted: #9da2ab; --muted-soft: rgba(157,162,171,.10);
-      --shadow-1: 0 1px 2px rgba(0,0,0,.4); --shadow-2: 0 16px 40px -8px rgba(0,0,0,.6);
-    }
+    --action: #722e1d; --action-soft: #f5e9e5; --bad: #b42318; --bad-soft: #fdeeec;
+    --neutral: #4a4f57; --neutral-soft: #f2f1ef; --muted: #6b7078; --muted-soft: #f2f1ef;
+    --shadow-1: 0 1px 2px rgba(70, 30, 20, .06), 0 1px 3px rgba(70, 30, 20, .08);
+    --shadow-2: 0 1px 2px rgba(70, 30, 20, .06), 0 24px 56px -24px rgba(90, 34, 20, .35);
+    --ease-soft: cubic-bezier(.22, 1, .36, 1);
+    font: 400 13px/1.45 -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", sans-serif;
+    color: var(--ink); -webkit-font-smoothing: antialiased; color-scheme: light;
   }
   .tone-good { --tone: var(--good); --tone-soft: var(--good-soft); }
   .tone-caution { --tone: var(--caution); --tone-soft: var(--caution-soft); }
@@ -80,26 +72,24 @@
   .wrap.floating { position: fixed; right: 20px; bottom: 20px; z-index: 2147483646; }
   .wrap.docked { display: block; margin: 10px 0 2px; }
   .chip {
-    display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 10px 0 4px;
-    background: var(--surface); border: 1px solid var(--line); border-radius: 11px; box-shadow: var(--shadow-1);
-    cursor: pointer; font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap;
-    transition: box-shadow .15s ease, border-color .15s ease, transform .15s ease;
+    display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 4px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 999px; box-shadow: var(--shadow-1);
+    cursor: pointer; font-size: 13px; font-weight: 650; color: var(--ink); white-space: nowrap;
+    transition: box-shadow .3s var(--ease-soft), border-color .3s var(--ease-soft), transform .2s var(--ease-soft);
   }
   .chip:hover { border-color: var(--line-2); box-shadow: var(--shadow-2); }
-  .chip:active { transform: translateY(1px); }
+  .chip:active { transform: scale(.98); }
   .floating .chip { height: 40px; padding-right: 12px; box-shadow: var(--shadow-2); }
   .chip.stale { border-style: dashed; }
-  .tile { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: var(--tone-soft); color: var(--tone); }
+  .tile { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: var(--tone-soft); color: var(--tone); }
   .tile svg.i { width: 15px; height: 15px; stroke-width: 2.1; }
   .chip .verdict { letter-spacing: -0.01em; }
+  .chip .cta { color: var(--accent); font-weight: 700; }
   .bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; margin-left: 2px; }
   .bars i { width: 3px; border-radius: 1px; background: var(--line-2); }
   .bars i:nth-child(1) { height: 5px; } .bars i:nth-child(2) { height: 8px; } .bars i:nth-child(3) { height: 12px; }
   .bars i.on { background: var(--tone); }
-  .sep { width: 1px; height: 16px; background: var(--line); }
-  .mark { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 6px; background: linear-gradient(135deg, var(--brand-a), var(--brand-b)); color: #fff; }
-  .mark svg.i { width: 12px; height: 12px; stroke-width: 2; }
-  .spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line-2); border-top-color: var(--brand-a); animation: spin .8s linear infinite; }
+  .spinner { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--line-2); border-top-color: var(--accent); animation: spin .8s linear infinite; }
   .pending .verdict { color: var(--ink-2); font-weight: 500; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -107,8 +97,8 @@
   .card {
     position: fixed; z-index: 2147483647; width: 348px; max-width: calc(100vw - 24px);
     max-height: min(620px, calc(100vh - 24px)); overflow: auto; overscroll-behavior: contain;
-    background: var(--raised); color: var(--ink); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow-2);
-    animation: rise .16s cubic-bezier(.2,.8,.2,1);
+    background: var(--raised); color: var(--ink); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow-2);
+    animation: rise .4s var(--ease-soft);
   }
   .card[hidden] { display: none; }
   .card:focus { outline: none; }
@@ -116,16 +106,16 @@
   @media (prefers-reduced-motion: reduce) { .card, .spinner { animation: none; } .chip { transition: none; } }
 
   .head { display: flex; align-items: center; justify-content: space-between; padding: 12px 12px 0 16px; }
-  .brand { display: flex; align-items: center; gap: 7px; font-weight: 650; font-size: 13px; letter-spacing: -0.01em; }
-  .iconbtn { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 8px; background: transparent; color: var(--ink-3); cursor: pointer; }
+  .brand { font-weight: 800; font-size: 14px; letter-spacing: -0.02em; }
+  .iconbtn { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 999px; background: transparent; color: var(--ink-3); cursor: pointer; }
   .iconbtn:hover { background: var(--subtle); color: var(--ink); }
 
   .body { padding: 12px 16px 14px; }
   .hero { display: flex; gap: 14px; align-items: center; padding: 14px; border-radius: 14px; background: var(--tone-soft); }
-  .size { display: grid; place-items: center; min-width: 58px; height: 58px; padding: 0 8px; border-radius: 12px; background: var(--surface); color: var(--ink); font-size: 24px; font-weight: 700; letter-spacing: -0.02em; box-shadow: var(--shadow-1); }
+  .size { display: grid; place-items: center; min-width: 58px; height: 58px; padding: 0 12px; border-radius: 999px; background: var(--ink); color: var(--on-ink); font-size: 22px; font-weight: 800; letter-spacing: -0.02em; box-shadow: var(--shadow-1); }
   .size.guess { border: 1.5px dashed var(--line-2); box-shadow: none; background: transparent; color: var(--ink-2); }
   .size.icon { color: var(--tone); } .size.icon svg.i { width: 26px; height: 26px; stroke-width: 2; }
-  .hero .title { font-size: 17px; font-weight: 700; letter-spacing: -0.015em; color: var(--tone); line-height: 1.25; }
+  .hero .title { font-size: 17px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); line-height: 1.25; }
   .hero .sub { margin-top: 2px; font-size: 12.5px; color: var(--ink-2); }
   .reason { margin: 12px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
 
@@ -155,11 +145,11 @@
 
   .meter { display: flex; gap: 3px; }
   .meter i { flex: 1; height: 6px; border-radius: 99px; background: var(--subtle); }
-  .meter i.on { background: linear-gradient(90deg, var(--brand-a), var(--brand-b)); }
+  .meter i.on { background: var(--accent); }
   .chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 9px; }
   .based { font-size: 12px; color: var(--ink-3); margin-right: 2px; }
   .chipline { display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 9px; border-radius: 99px; background: var(--subtle); color: var(--ink-2); font-size: 12px; font-weight: 500; }
-  .chipline.ai { background: linear-gradient(135deg, rgba(81,70,255,.10), rgba(139,92,246,.12)); color: var(--brand-a); }
+  .chipline.ai { background: var(--accent-soft); color: var(--accent); }
   .chipline.ai svg.i { width: 12px; height: 12px; }
   .caveat { margin-top: 7px; font-size: 12px; color: var(--ink-3); }
 
@@ -171,12 +161,12 @@
   .callout.tip { background: transparent; border: 1px dashed var(--line-2); color: var(--ink-3); }
   .callout.tip span { color: var(--ink-2); }
 
-  .ask { margin-top: 14px; padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); }
+  .ask { margin-top: 14px; padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: #fbfbfa; }
   .ask .q { font-weight: 650; font-size: 13.5px; }
   .ask .hint { margin-top: 2px; font-size: 12px; color: var(--ink-3); }
   .opts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-  .opt { min-width: 42px; height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--line-2); background: var(--surface); font-weight: 650; cursor: pointer; transition: border-color .12s, background .12s; }
-  .opt:hover { border-color: var(--brand-a); background: rgba(81,70,255,.06); }
+  .opt { min-width: 42px; height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-weight: 650; cursor: pointer; transition: border-color .3s var(--ease-soft), box-shadow .3s var(--ease-soft); }
+  .opt:hover { border-color: var(--line-2); box-shadow: 0 6px 16px -8px rgba(70, 30, 20, .3); }
   .textbtn { border: 0; background: none; padding: 6px 0 0; color: var(--ink-3); font-size: 12px; cursor: pointer; min-height: 24px; }
   .textbtn:hover { color: var(--ink); }
 
@@ -185,7 +175,7 @@
   .linkbtn:hover { color: var(--ink); background: var(--subtle); }
   .linkbtn svg.i { width: 14px; height: 14px; transition: transform .15s; }
   .linkbtn[aria-expanded="true"] svg.i { transform: rotate(90deg); }
-  .linkbtn.primary { color: var(--brand-a); }
+  .linkbtn.primary { color: var(--accent); }
 
   /* ---------- layer 2: how we got this ---------- */
   .why { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; font-size: 12.5px; color: var(--ink-2); }
@@ -205,7 +195,6 @@
   function icon(name) {
     return `<svg class="i" viewBox="0 0 20 20" aria-hidden="true" focusable="false">${ICONS[name] || ''}</svg>`;
   }
-  const mark = () => `<span class="mark" aria-hidden="true">${icon('hanger')}</span>`;
   const cap = (s) => String(s || '').replace(/^./, (c) => c.toUpperCase());
 
   function stateOf(rec) {
@@ -232,8 +221,8 @@
   function heroSub(rec) {
     switch (rec.state) {
       case 'runsSmall': case 'runsLarge': case 'trueToSize':
-        return 'Crowd signal · not personalized yet';
-      case 'lowConfidence': return rec.size ? 'Your usual size — no fit data on this item' : 'Tell us your size for a recommendation';
+        return 'From reviews. Not personalized yet';
+      case 'lowConfidence': return rec.size ? 'Your usual size. No fit data on this item yet' : 'Tell us your size for a recommendation';
       case 'failed': return 'We couldn’t find the sizes on this page';
       case 'sizeChange': return rec.selected ? `Better than the ${rec.selected} you picked` : (rec.fitLabel || '');
       case 'likelyReturn': return rec.size ? `Even ${rec.size}, the closest available, is a ${String(rec.fitLabel || 'poor fit').toLowerCase()}` : '';
@@ -315,8 +304,11 @@
       const lvl = confLevel(rec);
       const bars = lvl ? `<span class="bars" aria-hidden="true">${[1, 2, 3].map((n) => `<i class="${n <= lvl ? 'on' : ''}"></i>`).join('')}</span>` : '';
       const lead = pending ? '<span class="tile"><span class="spinner"></span></span>' : `<span class="tile">${icon(st.icon)}</span>`;
-      btn.innerHTML = `${lead}<span class="verdict">${esc(pending ? 'Checking fit…' : rec.verdict)}</span>${bars}<span class="sep" aria-hidden="true"></span>${mark()}`;
-      const label = `${PRODUCT_NAME}: ${pending ? 'checking fit' : rec.verdict}${rec.personalized ? `, ${rec.confidenceLabel} confidence` : ''}${meta.stale ? ', saved result' : ''}. Show details.`;
+      // Without a size the verdict is only the crowd's, so invite the one tap that personalizes it.
+      const wantsSize = !pending && !rec.personalized && rec.ask && rec.ask.type === 'usualSize';
+      const cta = wantsSize ? '<span class="cta">Your size?</span>' : '';
+      btn.innerHTML = `${lead}<span class="verdict">${esc(pending ? 'Checking fit…' : rec.verdict)}</span>${bars}${cta}`;
+      const label = `${PRODUCT_NAME}: ${pending ? 'checking fit' : rec.verdict}${rec.personalized ? `, ${rec.confidenceLabel} confidence` : ''}${meta.stale ? ', saved result' : ''}. ${wantsSize ? 'Add your size' : 'Show details'}.`;
       btn.setAttribute('aria-label', label);
       btn.setAttribute('aria-busy', pending ? 'true' : 'false');
     }
@@ -374,7 +366,8 @@
 
     function ask() {
       if (!rec.ask) return '';
-      return `<div class="ask"><div class="q" id="fc-ask">${esc(rec.ask.question)}</div><div class="hint">One tap. We’ll personalize every store from here.</div>
+      const hint = rec.ask.type === 'fitPreference' ? 'Slim sizes down a little, relaxed sizes up. Used on every store.' : 'One tap. We’ll personalize every store from here.';
+      return `<div class="ask"><div class="q" id="fc-ask">${esc(rec.ask.question)}</div><div class="hint">${esc(hint)}</div>
         <div class="opts" role="group" aria-labelledby="fc-ask">${rec.ask.options.map((l) => `<button class="opt" type="button" data-act="ask" data-label="${esc(l)}">${esc(l)}</button>`).join('')}</div>
         <button class="textbtn" type="button" data-act="dismiss-ask">Not now</button></div>`;
     }
@@ -397,7 +390,7 @@
       const sign = (x) => `${x > 0 ? '+' : ''}${x}`;
       const sources = { feedback: 'your fit feedback on this brand', 'wardrobe-brand': 'your orders from this brand', wardrobe: 'the sizes you keep', stated: 'the size you told us' };
       const signals = (o.signals || []).map((s) => `<div class="row"><span class="k">${esc(cap(s.detail))}</span><span class="v">${s.steps < -0.05 ? 'Runs small' : s.steps > 0.05 ? 'Runs large' : 'True to size'}</span></div>`).join('')
-        || '<div class="row"><span class="k">No reviews, chart or fit notes found</span><span class="v">—</span></div>';
+        || '<div class="row"><span class="k">No reviews, chart or fit notes found</span><span class="v">None</span></div>';
       const parts = (w.confidenceParts || []).map((p) => `<div class="row"><span class="k">${esc(cap(p.why))}</span><span class="v ${p.pts > 0 ? 'pos' : 'neg'}">${sign(p.pts)}</span></div>`).join('');
       const cs = w.confidenceSource;
       const model = cs && cs.kind === 'model' ? `<div class="row"><span class="k">AI assessment · ${esc(cs.model || 'model')}</span><span class="v">${rec.confidence}</span></div><div class="row"><span class="k">Rule-based estimate</span><span class="v">${cs.rules}</span></div>` : '';
@@ -407,14 +400,14 @@
         w.chart ? `<div class="row"><span class="k">Closest to your reference item</span><span class="v">${esc(w.chart.size)}</span></div>` : '',
       ].join('');
       const steps = Math.abs(o.steps || 0);
-      const move = steps >= 0.25 ? ` — about ${steps >= 0.75 ? 'one size' : 'half a size'} ${o.steps < 0 ? 'small' : 'large'}` : '';
+      const move = steps >= 0.25 ? `, about ${steps >= 0.75 ? 'one size' : 'half a size'} ${o.steps < 0 ? 'small' : 'large'}` : '';
       const src = Object.entries(w.src || {}).map(([k, v]) => `<div class="row"><span class="k src">${esc(k)}</span><span class="v src">${esc(v)}</span></div>`).join('');
       return `<div class="why" id="fc-why">
         <h4>How the size was picked</h4>
         <div class="formula">${b ? `Start from <b>${esc(b.label)}</b>, ${esc(sources[b.source] || b.source)}${b.borrowedFrom ? ` (borrowed from your ${esc(b.borrowedFrom)} size)` : ''}.<br>` : 'No size from you yet, so this is the crowd signal only.<br>'}This item ${esc(o.label || 'has no fit signal')}${esc(move)}.${b && rec.size ? ` Result: <b>${esc(rec.size)}</b>.` : ''}</div>
         <h4>Item signals</h4>${signals}${extra}
         ${parts ? `<h4>Confidence · ${rec.confidence}/100</h4>${model}${parts}` : ''}
-        <h4>Where the data came from</h4>${src || '<div class="row"><span class="k">—</span></div>'}
+        <h4>Where the data came from</h4>${src || '<div class="row"><span class="k">Nothing recorded</span></div>'}
         ${meta.stale ? '<p class="caveat">Showing a saved reading of this page.</p>' : ''}
       </div>`;
     }
@@ -423,10 +416,10 @@
       if (!isOpen || !rec) return;
       const st = stateOf(rec);
       card.innerHTML = `
-        <div class="head"><span class="brand">${mark()}${PRODUCT_NAME}</span><button class="iconbtn" type="button" data-act="close" aria-label="Close">${icon('close')}</button></div>
+        <div class="head"><span class="brand">${PRODUCT_NAME}</span><button class="iconbtn" type="button" data-act="close" aria-label="Close">${icon('close')}</button></div>
         <div class="body tone-${st.tone}">
           ${hero()}
-          <p class="reason">${esc(rec.reason)}</p>
+          ${rec.reason ? `<p class="reason">${esc(rec.reason)}</p>` : ''}
           ${distribution()}
           ${ladder()}
           ${confidence()}
@@ -438,7 +431,7 @@
         </div>
         <div class="foot">
           <button class="linkbtn" type="button" data-act="why" aria-expanded="${whyOpen}" aria-controls="fc-why">${icon('chevron')}How we got this</button>
-          <button class="linkbtn primary" type="button" data-act="wardrobe">Your wardrobe</button>
+          <button class="linkbtn primary" type="button" data-act="wardrobe">Your closet</button>
         </div>`;
       card.setAttribute('aria-labelledby', 'fc-title');
     }
@@ -473,5 +466,5 @@
     };
   }
 
-  (root.FitKit = root.FitKit || {}).badge = { create, STATES, PRODUCT_NAME };
+  (root.FitKit = root.FitKit || {}).badge = { create, STATES, PRODUCT_NAME, heroTitle, heroSub };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

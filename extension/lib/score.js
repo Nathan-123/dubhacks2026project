@@ -40,7 +40,7 @@
     brandCalibratedOffsetDamping: 0.5,
     // Garment-chart vs anchor-item weight when blending into the target position.
     chartWeight: 0.3,
-    preferenceAdjust: { fitted: -0.35, regular: 0, relaxed: 0.35 },
+    preferenceAdjust: { fitted: -0.35, regular: 0, relaxed: 0.35, oversized: 0.75 },
     // Minimum offset strength before a rung-0 badge claims anything about the item.
     rung0Strength: 0.3,
   };
@@ -348,6 +348,9 @@
     const askOptions = rungs.map((r) => r.options[0].label);
     const wantAsk = !oneSize && !askDismissed && (!baseline || baseline.borrowedFrom) && system !== 'unknown';
     const ask = wantAsk ? { type: 'usualSize', question: 'What size do you usually buy?', options: askOptions, system, section: product.identity.section || 'any', category: product.identity.category || 'top' } : null;
+    // Asked once, after the size: it shifts every recommendation, so it is worth one tap.
+    const wantPref = !ask && baseline && !(profile || {}).preference && !opts.prefDismissed;
+    const prefAsk = wantPref ? { type: 'fitPreference', question: 'How do you like it to fit?', options: ['Slim', 'Regular', 'Relaxed', 'Oversized'], values: ['fitted', 'regular', 'relaxed', 'oversized'] } : null;
 
     // ---- Rung 0: no baseline. Report the item offset honestly, never as personal.
     if (!baseline && !oneSize) {
@@ -372,7 +375,7 @@
       if (offset.reviewStrength >= CONFIG.rung0Strength) {
         return { ...base, state: 'trueToSize', verdict: 'True to size', reason: `${n ? `${n} reviews` : 'Available signals'} say this runs true to size.` };
       }
-      return { ...base, state: 'lowConfidence', verdict: 'No fit data yet', confidence: 5, reason: 'No fit reviews or size data found for this item. Tell us your usual size and we\u2019ll make a best guess.' };
+      return { ...base, state: 'lowConfidence', verdict: 'No fit data yet', confidence: 5, reason: '' };
     }
 
     // ---- One size: report fit, suppress the size recommendation.
@@ -411,7 +414,7 @@
     });
 
     // Best overall, ties broken by stretch (smaller) or relaxed preference (larger), else size up.
-    const tiebreakLarger = !stretch || profile.preference === 'relaxed';
+    const tiebreakLarger = !stretch || profile.preference === 'relaxed' || profile.preference === 'oversized';
     const better = (a, b) => (a.score !== b.score ? a.score > b.score : tiebreakLarger ? a.index > b.index : a.index < b.index);
     const pick = (list) => list.reduce((best, s) => (!best || better(s, best) ? s : best), null);
     const best = pick(scores);
@@ -528,7 +531,7 @@
       // fit is how well the size matches; hidden (null) when there is too little data to mean anything.
       fit: showFit ? shown.score : null, fitLabel: showFit ? fitLabel(shown.score) : null, fitRaw: shown.score,
       confidence, confidenceLabel, basis, caveats, personalized: true,
-      reason, alert, ask, helpMost, evidence,
+      reason, alert, ask: ask || prefAsk, helpMost, evidence,
       scores: scores.map(({ label, score, available, selected: sel }) => ({ label, score: showFit ? score : null, available, selected: sel, best: label === shown.label })),
       selected: selected ? selected.label : null,
       selectedFit: selected && showFit ? selected.score : null,
@@ -623,5 +626,39 @@
     return { kind: 'duplicate', text: `You own ${items.length} like this (${what}).`, items: items.map((i) => i.id) };
   }
 
-  return { score, failed, computeOffset, resolveBaseline, fitFromDistance, fitLabel, brandKey, sameBrand, CONFIG };
+  // ---------------------------------------------------------------------------
+  // popup view: the recommendation as the title, subtitle and extras the popup's store card shows
+
+  function title(rec) {
+    switch (rec.state) {
+      case 'goodBuy': return 'Good buy';
+      case 'fitRisk': return 'Fit risk';
+      case 'sizeChange': return /down/i.test(rec.verdict) ? 'Size down' : 'Size up';
+      case 'lowConfidence': return rec.size ? 'Best guess' : 'No fit data yet';
+      default: return rec.verdict;
+    }
+  }
+
+  function subtitle(rec) {
+    switch (rec.state) {
+      case 'runsSmall': case 'runsLarge': case 'trueToSize':
+        return 'From reviews. Not personalized yet';
+      case 'lowConfidence': return rec.size ? 'Your usual size. No fit data on this item yet' : 'Tell us your size for a recommendation';
+      case 'failed': return 'We couldn\u2019t find the sizes on this page';
+      case 'sizeChange': return rec.selected ? `Better than the ${rec.selected} you picked` : (rec.fitLabel || '');
+      case 'likelyReturn': return rec.size ? `Even ${rec.size}, the closest available, is a ${String(rec.fitLabel || 'poor fit').toLowerCase()}` : '';
+      default: return rec.fit != null ? `${rec.fitLabel} \u00b7 ${rec.fit}/100 for you` : '';
+    }
+  }
+
+  function popupView(rec) {
+    return {
+      state: rec.state, size: rec.size || null, title: title(rec), sub: subtitle(rec),
+      reason: rec.reason || '', personalized: !!rec.personalized, confidenceLabel: rec.confidenceLabel || null,
+      alert: rec.alert ? { kind: rec.alert.kind, text: rec.alert.text } : null,
+      ask: rec.ask ? { question: rec.ask.question, options: rec.ask.options.slice() } : null,
+    };
+  }
+
+  return { score, failed, popupView, computeOffset, resolveBaseline, fitFromDistance, fitLabel, brandKey, sameBrand, CONFIG };
 });
