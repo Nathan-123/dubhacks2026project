@@ -1,5 +1,6 @@
 /*
- * content — wires extract -> score -> badge on pages the user enabled.
+ * content — wires extract -> score -> popup on pages the user enabled. It never draws on the page:
+ * the popup is the only place a result shows.
  *
  * Runs only on stores the user enabled (registered dynamically by background.js after
  * Chrome's per-site permission prompt), or once on the current tab via activeTab.
@@ -15,6 +16,7 @@
   const LAZY_REVIEW_TIMEOUT_MS = 2000;
   const MODEL_WAIT_MS = 3000; // longest we hold the first verdict for the confidence model
   const ASK_DISMISS_KEY = 'fitcheck:askDismissed';
+  const PREF_DISMISS_KEY = 'fitcheck:prefDismissed';
 
   const state = {
     ctx: { config: {}, brandPriors: {}, settings: {} },
@@ -22,7 +24,6 @@
     canonical: null,
     product: null,
     stale: false,
-    badge: null,
     run: 0,
     scoring: 0,
     rec: null,
@@ -47,48 +48,51 @@
     return r.ok ? r.json() : null;
   }
 
-  function askDismissed() {
-    try { return sessionStorage.getItem(ASK_DISMISS_KEY) === '1'; } catch (_) { return false; }
+  function dismissed(key) {
+    try { return sessionStorage.getItem(key) === '1'; } catch (_) { return false; }
   }
 
   // ---------------------------------------------------------------------------
-  // badge lifecycle
+  // the popup: it shows this page's result as a state of its store card. It asks for the
+  // current view when it opens and hears every change while it stays open.
 
-  function ensureBadge() {
-    if (state.badge) return state.badge;
-    state.badge = K.badge.create({
-      onAsk: async (label) => {
-        const ask = state.rec && state.rec.ask;
-        if (!ask) return;
-        state.profile = await K.profile.dispatch({ type: 'setUsualSize', label, system: ask.system, section: ask.section, category: ask.category });
-        rescore(); // the badge changes as a direct result of the tap
-      },
-      onDismissAsk: () => {
-        try { sessionStorage.setItem(ASK_DISMISS_KEY, '1'); } catch (_) { /* ignore */ }
-        rescore();
-      },
-      onOpenWardrobe: (rec) => send('openWardrobe', { category: rec && rec.product && rec.product.category, pin: rec && rec.product }),
-      onRetry: () => runFor(location.href, { force: true }),
-    });
-    return state.badge;
+  let view = { status: 'pending' };
+  function publish(next) {
+    view = next;
+    send('fitUpdate', { view });
   }
 
-  function removeBadge() {
-    if (state.badge) { state.badge.destroy(); state.badge = null; }
+  function summarize(rec) {
+    return { ...K.score.popupView(rec), stale: state.stale };
   }
 
-  function dockTarget(product) {
-    const cfg = state.ctx.config || {};
-    const tryQ = (sel) => { if (!sel) return null; try { return document.querySelector(sel); } catch (_) { return null; } };
-    if (cfg.anchor) return tryQ(cfg.anchor);
-    if (product && product.sizes && product.sizes.docked) return tryQ(product.sizes.selector);
-    return null; // unknown store / unreliable control: float in a corner
+  async function answerAsk(label) {
+    const ask = state.rec && state.rec.ask;
+    if (!ask) return;
+    const event = ask.type === 'fitPreference'
+      ? { type: 'setPreference', preference: ask.values[ask.options.indexOf(label)] }
+      : { type: 'setUsualSize', label, system: ask.system, section: ask.section, category: ask.category };
+    state.profile = await K.profile.dispatch(event);
+    rescore(); // the result changes as a direct result of the tap
   }
+
+  function dismissAsk() {
+    const ask = state.rec && state.rec.ask;
+    try { sessionStorage.setItem(ask && ask.type === 'fitPreference' ? PREF_DISMISS_KEY : ASK_DISMISS_KEY, '1'); } catch (_) { /* ignore */ }
+    rescore();
+  }
+
+  chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+    if (!msg) return false;
+    if (msg.type === 'fitState') sendResponse({ view });
+    else if (msg.type === 'fitAnswer') { answerAsk(msg.label); sendResponse({ ok: true }); }
+    else if (msg.type === 'fitDismissAsk') { dismissAsk(); sendResponse({ ok: true }); }
+    else if (msg.type === 'fitRetry') { runFor(location.href, { force: true }); sendResponse({ ok: true }); }
+    return false;
+  });
 
   function showPending() {
-    const b = ensureBadge();
-    if (!b.host.isConnected) b.mount(null);
-    b.render({ state: 'pending', verdict: 'Checking fit…' }, { stale: false });
+    publish({ status: 'pending' });
   }
 
   // ---------------------------------------------------------------------------
@@ -104,7 +108,7 @@
     // Size controls mutate the live Product while backend/model requests are in flight.
     const { product, profile, opts } = structuredClone({
       product: state.product, profile: state.profile,
-      opts: { brandPriors: state.ctx.brandPriors, askDismissed: askDismissed() },
+      opts: { brandPriors: state.ctx.brandPriors, askDismissed: dismissed(ASK_DISMISS_KEY), prefDismissed: dismissed(PREF_DISMISS_KEY) },
     });
     const current = () => scoring === state.scoring && run === state.run && canonical === K.contract.canonicalUrl(location.href) && !liveSizeChanges(product).length;
     let rec = null;
@@ -119,7 +123,7 @@
       // per evidence summary, so size clicks on the same page are instant.
       if (rec.personalized && rec.evidence && state.ctx.settings.modelConfidence !== false) {
         if (!current()) return;
-        if (!state.badge || !state.rec) showPending();
+        if (!state.rec) showPending();
         const mc = await Promise.race([send('modelConfidence', { evidence: rec.evidence }), new Promise((r) => setTimeout(() => r(null), MODEL_WAIT_MS))]);
         if (!current()) return;
         if (mc && mc.ok) rec = K.score.score(product, profile, { ...opts, confidenceOverride: mc });
@@ -127,9 +131,7 @@
     }
     if (!current()) return;
     state.rec = rec;
-    const b = ensureBadge();
-    b.mount(dockTarget(state.product));
-    b.render(rec, { stale: state.stale });
+    publish({ status: 'done', rec: summarize(rec) });
   }
 
   // Also read at publication time: a response can arrive before the click debounce ends.
@@ -147,9 +149,21 @@
     return changes;
   }
 
+  // The popup opens itself the first time the shopper picks a size on a product: that is when they are
+  // deciding, and the answer is ready. Once per product, so trying other sizes stays quiet.
+  let offeredFor = null;
+  function offerPopup() {
+    if (offeredFor === state.canonical) return;
+    offeredFor = state.canonical;
+    send('openPopup');
+  }
+
   // Re-read the live size control: selection and availability change without navigation.
   function refreshLive() {
-    if (liveSizeChanges(state.product).length) rescore();
+    const changes = liveSizeChanges(state.product);
+    if (!changes.length) return;
+    if (changes.some((c) => c.selected !== !!c.option.selected)) offerPopup();
+    rescore();
   }
 
   let liveTimer = null;
@@ -157,7 +171,7 @@
     clearTimeout(liveTimer);
     liveTimer = setTimeout(refreshLive, 120);
   }
-  document.addEventListener('click', (e) => { if (!e.composedPath().some((n) => n && n.hasAttribute && n.hasAttribute('data-fitcheck'))) scheduleLive(); }, true);
+  document.addEventListener('click', scheduleLive, true);
   document.addEventListener('change', scheduleLive, true);
 
   // ---------------------------------------------------------------------------
@@ -203,7 +217,7 @@
     state.stale = false;
 
     // Never show a verdict from the previous product while the new one loads.
-    if (navigating && state.badge) showPending();
+    if (navigating) showPending();
     const pendingTimer = setTimeout(() => { if (run === state.run && !state.product) showPending(); }, PENDING_DELAY_MS);
     if (navigating) await new Promise((r) => setTimeout(r, SPA_SETTLE_MS));
     if (run !== state.run) return;
@@ -217,7 +231,7 @@
     }
     if (run !== state.run) return;
 
-    if (res.silent) { clearTimeout(pendingTimer); removeBadge(); checkOrderPage(); return; }
+    if (res.silent) { clearTimeout(pendingTimer); publish({ status: 'none' }); checkOrderPage(); return; }
 
     let product = res.ok ? res.product : null;
     if (!product) product = await llmTier(res);
@@ -235,9 +249,7 @@
     if (!product) {
       const rec = K.score.failed(res.missing || K.contract.FLOOR, res.product);
       state.rec = rec;
-      const b = ensureBadge();
-      b.mount(null);
-      b.render(rec, { stale: false });
+      publish({ status: 'failed', rec: summarize(rec) });
       return;
     }
     state.product = product;
@@ -302,15 +314,40 @@
     const date = new Date().toISOString().slice(0, 10);
     state.profile = await K.profile.dispatch({
       type: 'addItems',
-      items: normalized.map((it) => ({ ...it, brand: it.brand || siteBrand, date, orderId, source: 'order' })),
+      items: normalized.map((it) => ({ ...it, brand: it.brand || siteBrand, host: location.hostname.replace(/^www\./, ''), date, orderId, source: 'order' })),
     });
-    const b = ensureBadge();
-    b.mount(null);
-    b.render({
-      state: 'trueToSize', verdict: `Added ${normalized.length} to wardrobe`, personalized: false,
-      reason: `${normalized.map((i) => `${i.name} (${i.size})`).join(', ')}. Edit or remove anytime in your wardrobe. Addresses and payment details were not read.`,
-      scores: [], product: { category: normalized[0].category },
-    }, { stale: false });
+  }
+
+  // ---------------------------------------------------------------------------
+  // return policy: read once a month per store from the store's own policy page, so pieces from it count
+  // down the real window and cite where it came from. Unclear wording goes to the backend model, which
+  // must quote the policy back; without a clear answer nothing is saved.
+
+  const POLICY_KEY = 'returnPolicies';
+  const POLICY_MAX_AGE_DAYS = 30;
+
+  async function learnReturnPolicy() {
+    const host = location.hostname.replace(/^www\./, '');
+    const saved = (await new Promise((r) => chrome.storage.local.get(POLICY_KEY, r)))[POLICY_KEY] || {};
+    const old = saved[host];
+    if (old && Date.now() - new Date(old.checked).getTime() < POLICY_MAX_AGE_DAYS * 86400000) return;
+    const url = K.returns.policyLink(document, location.href);
+    if (!url) return;
+    const html = await (await fetch(url, { credentials: 'omit' })).text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    doc.querySelectorAll('script, style, noscript, template').forEach((el) => el.remove());
+    const text = (doc.body.textContent || '').replace(/[ \t]+/g, ' ').replace(/\n\s*\n+/g, '\n');
+    let found = K.returns.readWindow(text);
+    let via = 'page';
+    if (!found || !found.sure) {
+      const ai = await send('returnPolicy', { text: text.slice(0, 12000) });
+      found = ai && ai.ok ? ai : null;
+      via = 'ai';
+    }
+    if (!found) return;
+    const name = (document.querySelector('meta[property="og:site_name"]') || {}).content || null;
+    saved[host] = { name, days: found.days, from: found.from, url, via, checked: new Date().toISOString() };
+    await new Promise((r) => chrome.storage.local.set({ [POLICY_KEY]: saved }, r));
   }
 
   // ---------------------------------------------------------------------------
@@ -321,6 +358,7 @@
     state.profile = await K.profile.load();
     await runFor(location.href);
     checkOrderPage();
+    learnReturnPolicy().catch(() => { /* no policy found or readable; pieces keep the default window */ });
   }
 
   // Content scripts cannot patch the page's history.pushState, so watch the URL instead.
@@ -340,7 +378,7 @@
     if (area !== 'local') return;
     if (changes[K.profile.STORAGE_KEY]) {
       state.profile = changes[K.profile.STORAGE_KEY].newValue || K.profile.emptyProfile();
-      if (!changes[K.profile.STORAGE_KEY].newValue) { try { sessionStorage.removeItem(ASK_DISMISS_KEY); } catch (_) { /* ignore */ } }
+      if (!changes[K.profile.STORAGE_KEY].newValue) { try { sessionStorage.removeItem(ASK_DISMISS_KEY); sessionStorage.removeItem(PREF_DISMISS_KEY); } catch (_) { /* ignore */ } }
       rescore();
     }
     if (changes.stores || changes.settings) {

@@ -52,3 +52,28 @@ test('generated probe runs the browser UMD chain on a product fixture', async ()
   assert.equal(report.fields['identity.category'], 'dom');
   assert.ok(report.rung0Badge);
 });
+
+test('first install opens setup once; updates do not', async () => {
+  const installed = [];
+  const opened = [];
+  const event = { addListener() {} };
+  const context = vm.createContext({
+    URL, URLSearchParams,
+    chrome: {
+      runtime: { onInstalled: { addListener(fn) { installed.push(fn); } }, onStartup: event, onMessage: event, getURL: (p) => `chrome-extension://id/${p}` },
+      permissions: { onAdded: event, onRemoved: event, getAll: async () => ({ origins: [] }) },
+      scripting: { unregisterContentScripts: async () => {}, registerContentScripts: async () => {} },
+      storage: { local: { get: (k, cb) => cb({}), set: (o, cb) => cb() } },
+      tabs: { create: ({ url }) => { opened.push(url); } },
+    },
+  });
+  context.self = context;
+  context.importScripts = (...files) => {
+    for (const file of files) vm.runInContext(read(`extension/${file}`), context, { filename: file });
+  };
+  vm.runInContext(read('extension/background.js'), context);
+  for (const fn of installed) await fn({ reason: 'update' });
+  assert.deepEqual(opened, []);
+  for (const fn of installed) await fn({ reason: 'install' });
+  assert.deepEqual(opened, ['chrome-extension://id/onboarding/onboarding.html']);
+});

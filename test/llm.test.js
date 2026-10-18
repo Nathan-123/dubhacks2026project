@@ -138,3 +138,13 @@ test('Ollama not running: explicit 503, nothing breaks', async () => {
     assert.equal((await llm.status()).ok, false);
   } finally { app.close(); }
 });
+
+test('a model return window is kept only when its quote is really in the policy and names that number', () => {
+  const { checkReturns } = require('../server/llm.js');
+  const text = 'Returns are free in store.  Online returns must be postmarked within 30 days of the delivery date.';
+  const quote = 'Online returns must be postmarked within 30 days of the delivery date.';
+  assert.deepEqual(checkReturns(text, { days: 30, from: 'delivery', quote }), { days: 30, from: 'delivery', quote });
+  assert.equal(checkReturns(text, { days: 60, from: 'delivery', quote }), null, 'number not in the quote');
+  assert.equal(checkReturns(text, { days: 30, from: 'delivery', quote: 'Returns within 30 days.' }), null, 'quote not in the text');
+  assert.equal(checkReturns(text, { days: null, from: null, quote: null }), null);
+});

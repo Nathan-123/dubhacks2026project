@@ -238,4 +238,33 @@ async function parseOrder({ items, brand }) {
   });
 }
 
-module.exports = { status, extractProduct, parseOrder, toProduct, MODEL };
+const RETURNS_SCHEMA = {
+  type: 'object', required: ['days', 'from', 'quote'],
+  properties: {
+    days: nullable('integer'),
+    from: { type: ['string', 'null'], enum: ['delivery', 'shipping', 'purchase', null] },
+    quote: nullable('string'),
+  },
+};
+
+const RETURNS_SYSTEM = `You read a clothing store's return policy. Reply with JSON only.
+days: the standard number of days a US shopper has to return an online order for a refund (not holiday extensions, sale items or refund processing time). null when the text does not say.
+from: what that window counts from. quote: the exact sentence from the text that states it, copied word for word.`;
+
+/**
+ * The model's answer counts only if its quote is really in the policy text and names the same number
+ * of days, so a made-up window can never reach a shopper. -> { days, from, quote } | null
+ */
+function checkReturns(text, out) {
+  if (!out || !Number.isInteger(out.days) || out.days < 7 || out.days > 365 || !out.quote) return null;
+  const flat = (s) => String(s).replace(/\s+/g, ' ').trim().toLowerCase();
+  if (!flat(text).includes(flat(out.quote)) || !new RegExp(`\\b${out.days}\\b`).test(out.quote)) return null;
+  return { days: out.days, from: out.from || 'purchase', quote: out.quote };
+}
+
+async function returnPolicy({ text }) {
+  const policy = String(text || '').slice(0, 12000);
+  return checkReturns(policy, await callJson(RETURNS_SYSTEM, policy, RETURNS_SCHEMA));
+}
+
+module.exports = { status, extractProduct, parseOrder, returnPolicy, checkReturns, toProduct, MODEL };
