@@ -75,3 +75,10 @@ test('review text is never stored, only computed facts', async () => {
   const res = await runCase(c);
   assert.ok(!JSON.stringify(res.product).includes('Loved the fabric'));
 });
+
+test('on-page feet and inches still normalize to centimetres', async () => {
+  const { document } = parseHTML('<html><head><meta property="og:type" content="product"></head><body><h1>Men shirt</h1><div class="product-description">Model is 5 ft 11 in and wears size M.</div></body></html>');
+  const res = await extract.extract(document, { url: 'https://store.example/products/shirt' });
+  assert.deepEqual(res.product.modelRef, { heightCm: 180, sizeWorn: 'M' });
+  assert.equal(res.product._src.modelRef, 'dom');
+});
