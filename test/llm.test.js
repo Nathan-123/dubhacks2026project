@@ -12,7 +12,7 @@ const path = require('path');
 
 process.env.OPENROUTER_API_KEY = ''; // tests never call OpenRouter, even if .env has a key
 process.env.FIT_LLM_PROVIDER = 'ollama';
-process.env.FIT_CACHE_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'fitcheck-llm-cache-'));
+process.env.FIT_CACHE_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'fitting-room-llm-cache-'));
 const llm = require('../server/llm.js');
 const contract = require('../extension/lib/contract.js');
 const { createServer } = require('../server/index.js');

@@ -7,16 +7,16 @@
  */
 (function () {
   'use strict';
-  if (window.__fitcheckLoaded) return;
-  window.__fitcheckLoaded = true;
+  if (window.__fittingRoomLoaded) return;
+  window.__fittingRoomLoaded = true;
 
   const K = globalThis.FitKit;
   const PENDING_DELAY_MS = 350; // show "Checking fit…" only if extraction is not instant
   const SPA_SETTLE_MS = 700; // wait for a client-rendered product to replace the old one
   const LAZY_REVIEW_TIMEOUT_MS = 2000;
   const MODEL_WAIT_MS = 3000; // longest we hold the first verdict for the confidence model
-  const ASK_DISMISS_KEY = 'fitcheck:askDismissed';
-  const PREF_DISMISS_KEY = 'fitcheck:prefDismissed';
+  const ASK_DISMISS_KEY = 'fitting-room:askDismissed';
+  const PREF_DISMISS_KEY = 'fitting-room:prefDismissed';
 
   const state = {
     ctx: { config: {}, brandPriors: {}, settings: {} },

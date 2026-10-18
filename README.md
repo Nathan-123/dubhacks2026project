@@ -1,12 +1,11 @@
-# FittingRoom
+# Fitting Room
 
 **The one job:** answer "what size do I buy here?" on any store, and get better at it the more you shop.
 
-FittingRoom is a Chrome extension (MV3) with a small local backend. It starts with a four-question setup (section, height, how you like things to fit, and one piece that fits you well). On a product page it shows a size verdict next to the store's size buttons, personalized by what you told it. It learns from the sizes you own and from "did it fit?" feedback, and it knows each store's return window so it can tell you how long you have to send something back.
+Fitting Room is a Chrome extension (MV3) with a small local backend. It starts with a four-question setup (section, height, how you like things to fit, and one piece that fits you well). On a product page it shows a size verdict next to the store's size buttons, personalized by what you told it. It learns from the sizes you own and from "did it fit?" feedback, and it knows each store's return window so it can tell you how long you have to send something back.
 
-FittingRoom is a hackathon build. Your data stays in the browser. The optional backend runs on your own computer.
+Fitting Room is a hackathon build. Your data stays in the browser. The optional backend runs on your own computer.
 
-> **Naming:** the product is **FittingRoom**. Some UI strings and the manifest name still say "Fitting Room" and are being renamed.
 
 ---
 
@@ -29,8 +28,8 @@ Without either, everything still works. Confidence falls back to the rule-based 
 
 ### Using it
 
-1. **Setup** (opens on first install): tell FittingRoom your section (men's, women's, or both), height, fit preference (Slim / Regular / Relaxed / Oversized), and one piece you own that fits well with its brand, kind, and size. Each answer is saved once and used on every store.
-2. **Turn it on per store.** Open a product page → click the FittingRoom toolbar icon → **Enable on this store** (Chrome's own one-site prompt) or **Just check this page**. Nothing runs on a store you haven't enabled.
+1. **Setup** (opens on first install): tell Fitting Room your section (men's, women's, or both), height, fit preference (Slim / Regular / Relaxed / Oversized), and one piece you own that fits well with its brand, kind, and size. Each answer is saved once and used on every store.
+2. **Turn it on per store.** Open a product page → click the Fitting Room toolbar icon → **Enable on this store** (Chrome's own one-site prompt) or **Just check this page**. Nothing runs on a store you haven't enabled.
 3. **Read the badge.** It appears next to the store's size buttons. If it doesn't know your size for that kind of piece yet, it asks: tap your usual size, then how you like things to fit.
 4. **Your closet.** Open the wardrobe tab (from the popup or the badge) to add pieces, see your sizes per brand and kind, see return countdowns, manage the stores you turned on, and read the privacy panel.
 5. **Badge states without a store:** `chrome-extension://<id>/demo/states.html`.
