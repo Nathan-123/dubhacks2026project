@@ -1,0 +1,48 @@
+/*
+ * Landing page. tokens.css is a copy of extension/ui/tokens.css (palette, buttons, choices, prints, footer);
+ * this file only lays out the page.
+ */
+body { font-size: 16px; }
+h1 { font-size: clamp(44px, 6.4vw, 76px); line-height: 1; letter-spacing: -0.05em; }
+h2 { font-size: clamp(30px, 4vw, 44px); letter-spacing: -0.04em; }
+h3 { font-size: 19px; letter-spacing: -0.02em; }
+.lede { margin: 14px 0 28px; max-width: 52ch; color: var(--ink-2); font-size: 18px; text-wrap: pretty; }
+.why { margin: 4px 0 14px; color: var(--ink-3); font-size: 14.5px; text-wrap: pretty; }
+a.btn { text-decoration: none; }
+code { padding: 1px 6px; border-radius: 6px; background: var(--subtle); font-size: .9em; }
+ol { margin: 0; padding: 0; list-style: none; }
+/* static copies of setup's answer pills: shown, not pressed */
+.choice { display: inline-flex; align-items: center; cursor: default; }
+.choice:hover { transform: none; border-color: var(--line); box-shadow: 0 1px 2px rgba(70, 30, 20, .06); }
+
+.top { display: flex; justify-content: space-between; align-items: center; max-width: 1080px; margin: 0 auto; padding: 18px 24px; }
+
+.hero, .section { max-width: 1080px; margin: 0 auto; padding: 48px 24px 80px; }
+.hero { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+.prints { aspect-ratio: 1; }
+.prints .print { aspect-ratio: 1; }
+
+.sheet { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-sheet); box-shadow: var(--shadow-2); }
+.questions { display: grid; grid-template-columns: 1fr 1fr; }
+.questions li { padding: 28px 32px; }
+.questions li:nth-child(n + 3) { border-top: 1px solid var(--line); }
+.questions li:nth-child(odd) { border-right: 1px solid var(--line); }
+
+.shop { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.steps { display: grid; gap: 28px; }
+.steps p { margin: 6px 0 0; color: var(--ink-2); }
+
+.privacy { padding-top: 24px; }
+
+.install { max-width: 680px; margin: 0 auto; padding: 36px 40px; }
+.install ol { display: grid; gap: 10px; margin-bottom: 28px; padding-left: 22px; list-style: decimal; color: var(--ink-2); }
+.site-footer img { border-radius: 6px; }
+
+@media (max-width: 800px) {
+  .hero, .shop { grid-template-columns: 1fr; gap: 32px; }
+  .prints { max-width: 440px; width: 100%; margin: 0 auto; }
+  .questions { grid-template-columns: 1fr; }
+  .questions li { padding: 22px 20px; border-right: 0 !important; }
+  .questions li:nth-child(n + 2) { border-top: 1px solid var(--line); }
+  .install { padding: 26px 20px; }
+}

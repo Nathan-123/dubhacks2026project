@@ -1,0 +1,157 @@
+/* FittingRoom design tokens + shared components, used by the popup, setup and wardrobe pages.
+   Light only: white and ink with one accent, the red of the garment photos' backdrop (lit #722e1d,
+   shadow #5a2216). Red marks progress and the primary action; a chosen answer is ink.
+   Shapes: sheets 18px, cards 14px, text inputs 10px, photo prints 4px; every button, switch, chip and tag
+   fully round.
+   The in-page card mirrors these values inside its shadow root (content/badge.js). */
+/* Jost (SIL OFL, fonts/OFL.txt), latin subset: a free Futura, the typeface much of fashion branding uses. One family for everything. */
+@font-face { font-family: 'Jost'; src: url(fonts/jost.woff2) format('woff2'); font-weight: 100 900; font-display: swap; }
+:root {
+  --font: 'Jost', -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", sans-serif;
+  --bg: #fbfbfa; --surface: #ffffff; --subtle: #f2f1ef; --line: #e6e3df; --line-2: #cfcac5;
+  --ink: #16181d; --ink-2: #4a4f57; --ink-3: #6b7078; --on-ink: #f7f8f5; --focus: #16181d;
+  --accent: #722e1d; --accent-press: #5a2216; --accent-soft: #f5e9e5; --on-accent: #fdf6f3;
+  --good: #0f7a3f; --good-soft: #e9f7ef; --caution: #a15c00; --caution-soft: #fff4df;
+  --bad: #b42318; --bad-soft: #fdeeec;
+  --shadow-1: 0 1px 2px rgba(70, 30, 20, .06), 0 1px 3px rgba(70, 30, 20, .08);
+  --shadow-2: 0 1px 2px rgba(70, 30, 20, .06), 0 30px 70px -30px rgba(90, 34, 20, .35);
+  --radius-sheet: 18px; --radius-card: 14px; --radius-input: 10px;
+  --ease-soft: cubic-bezier(.22, 1, .36, 1);
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--bg); }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 14px/1.5 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: inherit; text-decoration-color: var(--line-2); text-underline-offset: 2px; }
+a:hover { text-decoration-color: currentColor; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+h1, h2, h3 { margin: 0; font-weight: 700; line-height: 1.15; letter-spacing: -0.03em; text-wrap: balance; }
+
+.brandline { font-weight: 600; font-size: 19px; letter-spacing: -0.01em; }
+
+/* ---------- buttons: neutral by default; .primary is the one rust action per view ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 18px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink);
+  box-shadow: 0 1px 2px rgba(70, 30, 20, .06); font-weight: 650; font-size: 14px; white-space: nowrap; cursor: pointer;
+  transition: background .3s var(--ease-soft), color .3s var(--ease-soft), border-color .3s var(--ease-soft), box-shadow .3s var(--ease-soft), transform .2s var(--ease-soft);
+}
+.btn:hover { border-color: var(--line-2); box-shadow: 0 6px 16px -8px rgba(70, 30, 20, .3); }
+.btn:active { transform: scale(.98); }
+.btn.primary { border-color: transparent; background: var(--accent); color: var(--on-accent); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .14), 0 8px 20px -10px rgba(114, 46, 29, .7); }
+.btn.primary:hover { background: var(--accent-press); }
+.btn.ghost { border-color: transparent; background: transparent; box-shadow: none; color: var(--ink-2); }
+.btn.ghost:hover { background: var(--subtle); color: var(--ink); }
+.btn.danger { color: var(--bad); }
+.btn.danger:hover { border-color: var(--bad); background: var(--bad-soft); }
+/* Disabled reads as "not yet", not broken. */
+.btn:disabled, .btn.primary:disabled { border-color: transparent; background: var(--subtle); color: var(--ink-3); box-shadow: none; cursor: default; transform: none; }
+.btn.sm { height: 32px; padding: 0 12px; font-size: 13px; }
+.btn.lg { height: 46px; padding: 0 24px; font-size: 15px; font-weight: 700; }
+/* Direction cues: forward actions lean ahead on hover, back actions point back. */
+.btn.forward { padding-right: 20px; }
+.btn.forward::after { content: "→"; transition: transform .35s var(--ease-soft); }
+.btn.forward:hover:not(:disabled)::after { transform: translateX(3px); }
+.btn.backward::before { content: "←"; }
+
+/* ---------- two-way switch: a white thumb slides under whichever side is on. Exactly two buttons. ---------- */
+.switch { position: relative; display: inline-grid; grid-auto-flow: column; grid-auto-columns: 1fr; padding: 3px; border-radius: 999px; background: var(--subtle); }
+.switch::before {
+  content: ""; position: absolute; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px); border-radius: 999px;
+  background: var(--surface); box-shadow: 0 1px 2px rgba(0, 0, 0, .08), 0 4px 12px -6px rgba(70, 30, 20, .35);
+  transition: transform .5s var(--ease-soft);
+}
+.switch:has(> button:last-child[aria-checked="true"])::before { transform: translateX(100%); }
+.switch button { position: relative; height: 30px; padding: 0 14px; border: 0; border-radius: 999px; background: transparent; color: var(--ink-3); font-size: 13px; font-weight: 650; cursor: pointer; transition: color .3s var(--ease-soft); }
+.switch button:hover, .switch button[aria-checked="true"] { color: var(--ink); }
+.switch.lg button { height: 40px; padding: 0 24px; font-size: 14.5px; }
+
+/* ---------- on/off toggle (role=switch): grey track when off, ink when on, the thumb slides ---------- */
+.toggle { position: relative; flex: none; width: 46px; height: 28px; padding: 0; border: 0; border-radius: 999px; background: var(--line-2); cursor: pointer; transition: background .35s var(--ease-soft); }
+.toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 999px; background: var(--surface); box-shadow: 0 1px 3px rgba(0, 0, 0, .2); transition: transform .45s var(--ease-soft); }
+.toggle[aria-checked="true"] { background: var(--ink); }
+.toggle[aria-checked="true"]::after { transform: translateX(18px); }
+.toggle:disabled { opacity: .5; cursor: default; }
+
+/* ---------- answer choices: quiet pills that lift on hover and fill with ink once chosen (role=radio) ---------- */
+.choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice {
+  min-width: 48px; height: 44px; padding: 0 20px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--surface); box-shadow: 0 1px 2px rgba(70, 30, 20, .06); font-weight: 650; cursor: pointer; font-variant-numeric: tabular-nums;
+  transition: background .3s var(--ease-soft), color .3s var(--ease-soft), border-color .3s var(--ease-soft), box-shadow .3s var(--ease-soft), transform .3s var(--ease-soft);
+}
+.choice:hover { border-color: var(--line-2); box-shadow: 0 6px 16px -8px rgba(70, 30, 20, .3); transform: translateY(-1px); }
+.choice:active { transform: scale(.97); }
+.choice[aria-checked="true"], .choice[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--on-ink); box-shadow: 0 6px 16px -8px rgba(22, 24, 29, .5); }
+.choices.sm { gap: 6px; }
+.choices.sm .choice { height: 34px; padding: 0 14px; font-size: 13px; }
+
+/* ---------- chips: small toggles (aria-pressed); pills: read-only tags ---------- */
+.chip { height: 32px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--subtle); font-size: 13px; font-weight: 600; color: var(--ink-2); cursor: pointer; transition: background .3s var(--ease-soft), color .3s var(--ease-soft), border-color .3s var(--ease-soft); }
+.chip:hover { color: var(--ink); border-color: var(--line-2); background: var(--surface); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+
+.pill { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 999px; background: var(--subtle); color: var(--ink-2); font-size: 12px; font-weight: 600; }
+.pill.ok { background: var(--good-soft); color: var(--good); }
+.pill .dot { background: currentColor; }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--line-2); flex: none; }
+.dot.ok { background: var(--good); box-shadow: 0 0 0 3px var(--good-soft); }
+.dot.warn { background: var(--caution); box-shadow: 0 0 0 3px var(--caution-soft); }
+.dot.off { background: var(--ink-3); }
+
+input:where(:not([type="checkbox"]):not([type="range"])), select, textarea {
+  height: 40px; padding: 0 12px; border-radius: var(--radius-input); border: 1px solid var(--line-2); background: var(--surface);
+}
+textarea { height: auto; padding: 8px 12px; }
+input::placeholder, textarea::placeholder { color: var(--ink-3); }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+
+/* ---------- store logo: the store's own tab icon as is, or its initial on a red-tinted circle ---------- */
+.logo { display: inline-grid; place-items: center; width: 32px; height: 32px; flex: none; }
+.logo img { width: 100%; height: 100%; object-fit: contain; }
+.logo.letter { border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: 14px; text-transform: uppercase; }
+.logo.sm { width: 24px; height: 24px; }
+.logo.sm.letter { font-size: 11px; }
+/* a logo inside a chip: small, on a white tile so white-backed marks match and dark ones stay visible on ink */
+.chip:has(.logo) { display: inline-flex; align-items: center; gap: 7px; padding-left: 7px; }
+.chip .logo { width: 20px; height: 20px; padding: 1px; border-radius: 4px; background: var(--surface); }
+.chip .logo.letter { font-size: 10px; border-radius: 999px; }
+
+/* ---------- photo prints: a garment photo on a thin white mat, tilted by --r ---------- */
+.print {
+  display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; padding: 6px; background: #fff; border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(70, 30, 20, .12), 0 22px 40px -20px rgba(90, 34, 20, .5); transform: rotate(var(--r, 0deg));
+}
+/* A small loose stack of prints; each print sets --x, --y, --w and --r. */
+.prints { position: relative; }
+.prints .print { position: absolute; left: var(--x); top: var(--y); width: var(--w); padding: 4px; }
+
+/* ---------- site footer (closet, privacy): made-at line, links, team ---------- */
+.site-footer { max-width: 1040px; margin: 8px auto 0; padding: 20px 24px 36px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-3); }
+.footer-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.footer-links, .footer-team { display: flex; gap: 18px; flex-wrap: wrap; }
+.footer-team { margin-top: 12px; }
+.site-footer a { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); font-weight: 600; text-decoration: none; }
+.site-footer a:hover { color: var(--ink); }
+.site-footer .person { display: inline-flex; align-items: center; gap: 6px; }
+
+/* ---------- dropdown (ui/select.js): a field-shaped button and a floating sheet of options ---------- */
+.menu-select { position: relative; }
+.menu-button { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: var(--radius-input); background: var(--surface); font-size: 15px; font-weight: 500; text-align: left; cursor: pointer; transition: border-color .3s var(--ease-soft); }
+.menu-button::after { content: ""; width: 7px; height: 7px; margin: -4px 2px 0 12px; border: solid var(--ink-3); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); transition: transform .35s var(--ease-soft); }
+.menu-button:hover { border-color: var(--line-2); }
+.menu-button[aria-expanded="true"] { border-color: var(--line-2); }
+.menu-button[aria-expanded="true"]::after { transform: translateY(4px) rotate(-135deg); }
+.menu-list { position: absolute; z-index: 10; top: calc(100% + 6px); left: 0; right: 0; margin: 0; padding: 6px; list-style: none; border: 1px solid var(--line); border-radius: var(--radius-card); background: var(--surface); box-shadow: var(--shadow-2); outline: none; animation: menu-in .3s var(--ease-soft); }
+@keyframes menu-in { from { opacity: 0; transform: translateY(-4px); } }
+@media (prefers-reduced-motion: reduce) { .menu-list { animation: none; } }
+.menu-list [role="option"] { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; border-radius: var(--radius-input); font-size: 15px; font-weight: 500; cursor: pointer; }
+.menu-list [role="option"].active { background: var(--subtle); }
+.menu-list [role="option"][aria-selected="true"] { font-weight: 650; }
+.menu-list [role="option"][aria-selected="true"]::after { content: "✓"; color: var(--ink); }

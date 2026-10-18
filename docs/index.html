@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FittingRoom</title>
+  <meta name="description" content="A Chrome extension that tells you what size to buy on any clothing store.">
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <header class="top">
+    <span class="brandline">FittingRoom</span>
+    <a class="btn primary" href="#install">Get FittingRoom</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1>What size do I buy here?</h1>
+        <p class="lede">FittingRoom answers that on any clothing store</p>
+        <a class="btn primary lg forward" href="#install">Get FittingRoom</a>
+      </div>
+      <div class="prints" aria-hidden="true">
+        <img class="print" src="assets/photos/hoodie.jpg" alt="" style="--x:18%;--y:0%;--w:56%;--r:-3deg">
+        <img class="print" src="assets/photos/flannel.jpg" alt="" style="--x:0%;--y:44%;--w:42%;--r:4deg">
+        <img class="print" src="assets/photos/cargo.jpg" alt="" style="--x:56%;--y:40%;--w:44%;--r:-5deg">
+      </div>
+    </section>
+
+    <!-- The four setup questions, as onboarding asks them. -->
+    <section class="section">
+      <h2>Four questions. Then just shop.</h2>
+      <p class="lede">Setup opens once, when you install. Your answers shape every size it suggests.</p>
+      <ol class="sheet questions">
+        <li>
+          <h3>Which section do you shop?</h3>
+          <p class="why">Sizes run differently between sections. We never ask your gender.</p>
+          <div class="choices sm"><span class="choice">Men’s</span><span class="choice">Women’s</span><span class="choice">Both</span></div>
+        </li>
+        <li>
+          <h3>How tall are you?</h3>
+          <p class="why">Reviewers often share their height, so this helps compare you with people your size.</p>
+          <div class="choices sm"><span class="choice">ft / in</span><span class="choice">cm</span></div>
+        </li>
+        <li>
+          <h3>How do you like things to fit?</h3>
+          <p class="why">This nudges every size pick up or down.</p>
+          <div class="choices sm"><span class="choice">Slim</span><span class="choice">Regular</span><span class="choice">Relaxed</span><span class="choice">Oversized</span></div>
+        </li>
+        <li>
+          <h3>What fits you best right now?</h3>
+          <p class="why">A top or bottom you own and love: its brand and size. Every other brand is compared against it.</p>
+          <div class="choices sm"><span class="choice">Top</span><span class="choice">Bottom</span></div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section shop">
+      <div class="prints" aria-hidden="true">
+        <img class="print" src="assets/photos/sneakers.jpg" alt="" style="--x:0%;--y:6%;--w:54%;--r:-4deg">
+        <img class="print" src="assets/photos/sweats.jpg" alt="" style="--x:42%;--y:30%;--w:56%;--r:3deg">
+      </div>
+      <ol class="steps">
+        <li>
+          <h3>Turn it on for a store</h3>
+          <p>Click the toolbar icon on a product page. FittingRoom only runs on stores you turn on, and Chrome asks once per store.</p>
+        </li>
+        <li>
+          <h3>See your size</h3>
+          <p>A verdict appears next to the store’s size buttons, using the store’s reviews and size chart along with your answers.</p>
+        </li>
+        <li>
+          <h3>Tell it how things fit</h3>
+          <p>Your closet remembers what fit you at each brand. Mark a piece Just right, Too small or Too big, and the next size gets more accurate. It also counts down each store’s return window.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="section privacy">
+      <h2>Your closet stays in this browser.</h2>
+      <p class="lede">Nothing is tied to your name, address or card. One button deletes everything.</p>
+    </section>
+
+    <section class="section" id="install">
+      <div class="sheet install">
+        <h2>Get FittingRoom</h2>
+        <p class="lede">Built at DubHacks ’26. Until it’s on the Chrome Web Store, install it from GitHub:</p>
+        <ol>
+          <li>Download the code and unzip it.</li>
+          <li>Open <code>chrome://extensions</code> and turn on Developer mode.</li>
+          <li>Click Load unpacked and pick the <code>extension</code> folder.</li>
+        </ol>
+        <a class="btn primary lg forward" href="https://github.com/Nathan-123/dubhacks2026project/archive/refs/heads/main.zip">Download</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-row">
+      <a href="https://dubhacks.co" target="_blank" rel="noopener noreferrer"><img src="assets/dubhacks.svg" alt="" width="24" height="24">Built at DubHacks ’26</a>
+      <nav class="footer-links" aria-label="About FittingRoom">
+        <a href="https://github.com/Nathan-123/dubhacks2026project" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
