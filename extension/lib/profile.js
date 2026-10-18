@@ -11,8 +11,14 @@
  *     wardrobe: [ { id, brand, name, category, subcategory, section, size, system,
  *                   price, date, url, image, source, returnBy, feedback, feedbackAt, returned } ],
  *     anchors:  { "<category>": { chest: 21, bodyLength: 28, unit: "in" } },  // optional
- *     preference: null | "fitted" | "regular" | "relaxed"                     // optional
+ *     preference: null | "fitted" | "regular" | "relaxed" | "oversized"       // optional
+ *     section:  null | "men" | "women" | "both",                              // onboarding
+ *     body:     null | { heightCm, weightKg },                                // onboarding, weight optional
+ *     onboardedAt: null | ISO time
  *   }
+ *
+ * The onboarding "best-fitting piece" is a wardrobe item with source "onboarding" and
+ * feedback "perfect"; there is at most one.
  */
 (function (root, factory) {
   const isNode = typeof module === 'object' && module.exports;
@@ -27,7 +33,7 @@
   const RETURN_WINDOW_DAYS = 30;
 
   function emptyProfile() {
-    return { version: 1, stated: {}, wardrobe: [], anchors: {}, preference: null };
+    return { version: 1, stated: {}, wardrobe: [], anchors: {}, preference: null, section: null, body: null, onboardedAt: null };
   }
 
   function uid() {
@@ -109,6 +115,19 @@
       case 'setPreference':
         p.preference = event.preference || null;
         return p;
+      case 'setSection':
+        p.section = event.section || null;
+        return p;
+      case 'setBody':
+        p.body = event.body || null;
+        return p;
+      case 'setAnchorItem':
+        p.wardrobe = p.wardrobe.filter((w) => w.source !== 'onboarding');
+        if (event.item) p.wardrobe.push(normalizeItem({ ...event.item, source: 'onboarding', feedback: 'perfect', feedbackAt: now }));
+        return p;
+      case 'completeOnboarding':
+        p.onboardedAt = now;
+        return p;
       case 'replace':
         return { ...emptyProfile(), ...event.profile };
       case 'deleteAll':
@@ -135,10 +154,55 @@
     return { score: Math.min(100, pts), stated, items, feedback: fb, next };
   }
 
+  function anchorItem(profile) {
+    return ((profile && profile.wardrobe) || []).find((w) => w.source === 'onboarding') || null;
+  }
+
+  // What fit at each brand, per kind of piece (top, bottom, outerwear...). A brand never gets one size:
+  // its tops, bottoms and jackets can use different scales. Per kind, a "perfect" piece wins, else the newest.
+  // -> [ { brand, pieces: [ { kind, size, feedback } ] } ], brands newest first.
+  function brandSizes(profile) {
+    const newest = ((profile && profile.wardrobe) || [])
+      .filter((w) => w.brand && w.brand.trim())
+      .sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+    const brands = new Map();
+    for (const w of newest) {
+      const key = w.brand.trim().toLowerCase();
+      if (!brands.has(key)) brands.set(key, { brand: w.brand.trim(), kinds: new Map() });
+      const kinds = brands.get(key).kinds;
+      const kind = w.category || 'other';
+      const held = kinds.get(kind);
+      if (!held || (held.feedback !== 'perfect' && w.feedback === 'perfect')) {
+        kinds.set(kind, { kind, size: w.size, feedback: w.feedback || null });
+      }
+    }
+    return [...brands.values()].map((b) => ({ brand: b.brand, pieces: [...b.kinds.values()] }));
+  }
+
+  // A piece's return countdown. Stores with a known policy ({ name, host, returns: { days, url } }, the
+  // first match wins) use their own window and cite their policy page; everything else keeps the default
+  // window with nothing to cite. Counted from the purchase date, which is never later than the ship or
+  // delivery date stores count from. -> null | { daysLeft, store, url }
+  function returnWindow(item, stores, now) {
+    const key = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const brand = key(item.brand);
+    const host = String(item.host || '').toLowerCase();
+    const sameHost = (h) => !!h && !!host && (h === host || host.endsWith(`.${h}`) || h.endsWith(`.${host}`));
+    const store = (stores || []).find((s) => s.returns && ((brand && key(s.name) === brand) || sameHost(s.host)));
+    if (store && item.date) {
+      const left = daysLeft({ returnBy: addDays(item.date, store.returns.days) }, now);
+      return { daysLeft: left, store: store.name || store.host, url: store.returns.url };
+    }
+    const left = daysLeft(item, now);
+    return left == null ? null : { daysLeft: left, store: null, url: null };
+  }
+
   function daysLeft(item, now) {
     if (!item.returnBy) return null;
-    const ms = new Date(item.returnBy + 'T23:59:59').getTime() - (now || Date.now());
-    return Math.ceil(ms / 86400000);
+    // Calendar days from today to the last return day: 0 means today is the last day.
+    const today = new Date(now || Date.now());
+    today.setHours(0, 0, 0, 0);
+    return Math.round((new Date(item.returnBy + 'T00:00:00').getTime() - today.getTime()) / 86400000);
   }
 
   // --- storage (browser only) -------------------------------------------------
@@ -158,5 +222,5 @@
     return save(next);
   }
 
-  return { STORAGE_KEY, emptyProfile, apply, normalizeItem, strength, daysLeft, load, save, dispatch };
+  return { STORAGE_KEY, emptyProfile, apply, normalizeItem, strength, anchorItem, brandSizes, returnWindow, daysLeft, load, save, dispatch };
 });

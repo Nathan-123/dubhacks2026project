@@ -8,15 +8,17 @@
     "reviewPlatform": "okendo | yotpo | judgeme | bazaarvoice | powerreviews | stamped | loox | generic",
     "reviewContainer": "CSS selector of the review widget, if auto-detection misses it",
     "lazyReviews": "true to scroll the review widget into view so it loads (scroll position is restored)",
-    "section": "force a section (men | women | unisex) when the URL does not say"
+    "section": "force a section (men | women | unisex) when the URL does not say",
+    "returns": "curated US online return window: days, what the store counts from (shipping | delivery), the policy page cited in the closet, and when it was checked"
   },
   "brandPriors": {
     "_readme": "Signal rank 7: brand-level offset in size steps (negative = runs small). Hypotheses only; keep empty until there is data. Keys are lowercase alphanumeric brand names, e.g. \"abercrombieandfitch\": -0.2"
   },
   "stores": [
-    { "host": "uniqlo.com", "name": "Uniqlo", "anchor": null, "sizeControl": null, "reviewPlatform": null, "lazyReviews": false },
-    { "host": "abercrombie.com", "name": "Abercrombie & Fitch", "anchor": null, "sizeControl": null, "reviewPlatform": null, "lazyReviews": false },
-    { "host": "everlane.com", "name": "Everlane", "anchor": null, "sizeControl": null, "reviewPlatform": null, "lazyReviews": false },
-    { "host": "allbirds.com", "name": "Allbirds", "anchor": null, "sizeControl": null, "reviewPlatform": null, "lazyReviews": false }
+    { "host": "uniqlo.com", "name": "Uniqlo", "anchor": null, "sizeControl": null, "reviewPlatform": null, "lazyReviews": false, "returns": { "days": 30, "from": "shipping", "url": "https://faq-us.uniqlo.com/articles/en_US/FAQ/What-is-your-return-policy-for-online-orders", "checked": "2026-10-18" } },
+    { "host": "abercrombie.com", "name": "Abercrombie & Fitch", "anchor": null, "sizeControl": null, "reviewPlatform": null, "lazyReviews": false, "returns": { "days": 30, "from": "delivery", "url": "https://www.abercrombie.com/shop/us/help", "checked": "2026-10-18" } },
+    { "host": "everlane.com", "name": "Everlane", "anchor": null, "sizeControl": null, "reviewPlatform": null, "lazyReviews": false, "returns": { "days": 30, "from": "shipping", "url": "https://www.everlane.com/policies/refund-policy", "checked": "2026-10-18" } },
+    { "host": "www2.hm.com", "name": "H&M", "anchor": null, "sizeControl": null, "reviewPlatform": null, "lazyReviews": false, "returns": { "days": 30, "from": "delivery", "url": "https://www2.hm.com/en_us/customer-service/returns.html", "checked": "2026-10-18" } },
+    { "host": "pacsun.com", "name": "PacSun", "anchor": null, "sizeControl": null, "reviewPlatform": null, "lazyReviews": false }
   ]
 }

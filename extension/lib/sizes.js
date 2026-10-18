@@ -153,5 +153,18 @@
     return parseLabel(text) !== null;
   }
 
-  return { parseLabel, normalizeAlpha, detectSystem, sameFamily, ladder, positionOf, isSizeLabel, ALPHA_RANK };
+  const SPELLED = {
+    XXXS: '3X small', XXS: '2X small', XS: 'Extra small', S: 'Small', M: 'Medium', L: 'Large',
+    XL: 'Extra large', XXL: '2X large', XXXL: '3X large', XXXXL: '4X large', XXXXXL: '5X large',
+  };
+
+  /** A size as a shopper says it: "M" -> "Medium", "32x30" -> "32 × 30"; anything else unchanged. */
+  function spelledOut(label) {
+    const s = String(label == null ? '' : label).trim();
+    const alpha = normalizeAlpha(s);
+    if (alpha && SPELLED[alpha]) return SPELLED[alpha];
+    return s.replace(/^(\d+)\s*x\s*(\d+)$/i, '$1 \u00d7 $2');
+  }
+
+  return { parseLabel, normalizeAlpha, spelledOut, detectSystem, sameFamily, ladder, positionOf, isSizeLabel, ALPHA_RANK };
 });
