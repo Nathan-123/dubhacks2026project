@@ -146,7 +146,7 @@
   async function loadLazyReviews() {
     const cfg = state.ctx.config || {};
     if (!cfg.lazyReviews) return;
-    const region = (cfg.reviewContainer && document.querySelector(cfg.reviewContainer)) || (K.extract._internal.reviewRegion(document, cfg) || {}).el;
+    const region = K.extract.findReviewRegion(document, cfg);
     if (!region || (region.textContent || '').length > 400) return;
     const y = window.scrollY;
     await new Promise((resolve) => {

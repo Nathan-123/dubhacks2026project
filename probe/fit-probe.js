@@ -1325,6 +1325,12 @@
     return null;
   }
 
+  /** Return the review widget element, or null when no region is found. */
+  function findReviewRegion(doc, config) {
+    const region = reviewRegion(doc, config);
+    return region ? region.el : null;
+  }
+
   function applyReviews(product, doc, config) {
     const S = 'reviewWidget';
     const region = reviewRegion(doc, config);
@@ -1731,7 +1737,7 @@
   }
 
   return {
-    extract, applyFallbacks, readSelection, findSizeControl, trimmedText, jsonLdNodes,
+    extract, applyFallbacks, readSelection, findSizeControl, findReviewRegion, trimmedText, jsonLdNodes,
     // exposed for tests and the probe
     _internal: { classify, parseChartTable, parseFabric, parseModelRef, parseCut, categorize, sectionOf, applyReviews, reviewRegion, isShopify, stateBlobs, txt },
   };
