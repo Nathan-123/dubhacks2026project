@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fitting Room setup</title>
+  <title>FittingRoom onboarding</title>
   <link rel="stylesheet" href="../ui/tokens.css">
   <link rel="stylesheet" href="onboarding.css">
 </head>
@@ -12,10 +12,10 @@
   <div class="paper" aria-hidden="true"><div class="mosaic" id="mosaic"></div></div>
 
   <main class="layout">
+    <p class="hero">FittingRoom</p>
     <section class="form" aria-labelledby="title">
       <header class="masthead">
-        <div class="masthead-row"><span class="brandline">Fitting Room</span><span class="step-count" id="step-count" aria-live="polite">1 of 4</span></div>
-        <h1 id="title">Let’s find your size.</h1>
+        <div class="masthead-row"><h1 id="title">Let’s find your size.</h1><span class="step-count" id="step-count" aria-live="polite">1 of 4</span></div>
         <p class="lede">Four quick questions. Your answers shape every size we suggest.</p>
       </header>
 
@@ -113,6 +113,10 @@
       </footer>
     </section>
   </main>
+
+  <a class="dubhacks" href="https://dubhacks.co" target="_blank" rel="noopener">
+    <img src="../ui/dubhacks.svg" alt="" width="28" height="28">Built at DubHacks ’26
+  </a>
 
   <script src="../lib/sizes.js"></script>
   <script src="../lib/profile.js"></script>

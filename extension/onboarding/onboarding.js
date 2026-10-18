@@ -259,8 +259,6 @@
     if (d.section) {
       state.section = state.section === d.section ? null : d.section;
       update();
-      // A single tap answers this one, so move on once the pick has registered.
-      if (state.section) setTimeout(() => { if (STEPS[step] === 'section') goTo(step + 1); }, 420);
     }
     else if (d.unit) { if (state.unit !== d.unit) { state.unit = d.unit; fillHeight(); showHeightError(false); } update(); }
     else if (d.fit !== undefined && t.closest('.fit-stops')) { state.fit = FITS[Number(d.fit)]; $('fit').value = d.fit; update(); }
@@ -441,6 +439,8 @@
 
   (async function boot() {
     const profile = hasStorage ? await P.load() : P.emptyProfile();
+    // Onboarding the first time; after that this page edits the saved setup.
+    if (profile.onboardedAt) document.title = 'FittingRoom setup';
     renderMosaic();
     prefill(profile);
     update();
