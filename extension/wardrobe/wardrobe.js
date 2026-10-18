@@ -165,14 +165,13 @@ function renderPinned() {
 
 // Setup answers as read-only pills, the same ones the popup shows.
 function renderAnswers() {
-  const a = P.anchorItem(profile);
   const cm = profile.body && profile.body.heightCm;
   const inches = cm ? Math.round(cm / 2.54) : 0;
   const pills = [
     SECTION[profile.section],
     cm ? `${Math.floor(inches / 12)}′${inches % 12}″` : null,
     FIT[profile.preference],
-    a ? `Best fit: ${a.brand} ${a.size}` : null,
+    ...P.anchorItems(profile).map((a) => `Best fit: ${a.brand} ${a.size}`),
   ].filter(Boolean);
   $('setup-answers').innerHTML = pills.map((t) => `<span class="pill">${esc(t)}</span>`).join('');
   $('edit-setup').textContent = pills.length ? 'Edit setup' : 'Set up';

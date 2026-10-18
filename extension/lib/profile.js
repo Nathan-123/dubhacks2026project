@@ -17,8 +17,8 @@
  *     onboardedAt: null | ISO time
  *   }
  *
- * The onboarding "best-fitting piece" is a wardrobe item with source "onboarding" and
- * feedback "perfect"; there is at most one.
+ * The onboarding "best-fitting pieces" are wardrobe items with source "onboarding" and
+ * feedback "perfect", at most one per brand and kind (Uniqlo top, Levi's bottom...).
  */
 (function (root, factory) {
   const isNode = typeof module === 'object' && module.exports;
@@ -121,9 +121,9 @@
       case 'setBody':
         p.body = event.body || null;
         return p;
-      case 'setAnchorItem':
+      case 'setAnchorItems':
         p.wardrobe = p.wardrobe.filter((w) => w.source !== 'onboarding');
-        if (event.item) p.wardrobe.push(normalizeItem({ ...event.item, source: 'onboarding', feedback: 'perfect', feedbackAt: now }));
+        for (const it of event.items || []) p.wardrobe.push(normalizeItem({ ...it, source: 'onboarding', feedback: 'perfect', feedbackAt: now }));
         return p;
       case 'completeOnboarding':
         p.onboardedAt = now;
@@ -154,8 +154,8 @@
     return { score: Math.min(100, pts), stated, items, feedback: fb, next };
   }
 
-  function anchorItem(profile) {
-    return ((profile && profile.wardrobe) || []).find((w) => w.source === 'onboarding') || null;
+  function anchorItems(profile) {
+    return ((profile && profile.wardrobe) || []).filter((w) => w.source === 'onboarding');
   }
 
   // What fit at each brand, per kind of piece (top, bottom, outerwear...). A brand never gets one size:
@@ -222,5 +222,5 @@
     return save(next);
   }
 
-  return { STORAGE_KEY, emptyProfile, apply, normalizeItem, strength, anchorItem, brandSizes, returnWindow, daysLeft, load, save, dispatch };
+  return { STORAGE_KEY, emptyProfile, apply, normalizeItem, strength, anchorItems, brandSizes, returnWindow, daysLeft, load, save, dispatch };
 });

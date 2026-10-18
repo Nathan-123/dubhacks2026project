@@ -2,7 +2,7 @@
 
 /*
  * onboarding — first-run setup. Four optional answers (section, height, fit, best-fitting
- * piece), one at a time on a centered card framed by garment photos. Saved to the profile on Save.
+ * pieces), one at a time on a centered card framed by garment photos. Saved to the profile on Save.
  */
 (function () {
   const K = window.FitKit;
@@ -33,23 +33,61 @@
   // Outside the extension (a file preview) there is no chrome.storage; keep answers in memory.
   const hasStorage = typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local;
 
+  // kind/brand/size/length is the piece being edited. Each finished one is kept in `pieces`, one per brand and
+  // kind, so a shopper can add a Uniqlo top and a Levi's bottom without losing either.
   const state = {
     section: null, unit: 'imperial', heightCm: null, fit: null,
     kind: 'top', brand: '', size: null, length: null,
+    pieces: new Map(),
   };
+
+  const esc = (t) => String(t).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
+  // ---------------------------------------------------------------------------
+  // pieces
+
+  const pieceKey = (kind, brand) => `${kind}:${brand.trim().toLowerCase()}`;
+  const draftKey = () => pieceKey(state.kind, state.brand);
+
+  // Keep the piece being edited once it has a brand and a size.
+  function keepDraft() {
+    if (!state.brand.trim() || !state.size) return;
+    state.pieces.set(draftKey(), { kind: state.kind, brand: state.brand.trim(), size: state.size, length: state.length });
+  }
+
+  // After the brand or kind changes, show the size saved for that pair. A size picked before any brand
+  // (keepUnsaved) stays, so choosing the size first and the brand second still works.
+  function loadDraft(keepUnsaved) {
+    const saved = state.pieces.get(draftKey());
+    if (saved) { state.size = saved.size; state.length = saved.length; }
+    else if (!keepUnsaved) { state.size = null; state.length = null; }
+  }
+
+  function setBrand(brand) {
+    const unsaved = !state.pieces.has(draftKey());
+    state.brand = brand;
+    loadDraft(unsaved);
+  }
+
+  function pieceLabel(p) {
+    const size = p.kind === 'bottom' && p.length ? `${p.size} × ${p.length}` : p.size;
+    return `${p.brand} ${p.kind === 'bottom' ? 'bottom' : 'top'} ${size}`;
+  }
 
   // ---------------------------------------------------------------------------
   // answers -> profile
 
-  function anchorItem() {
-    if (!state.brand.trim() || !state.size) return null;
-    const bottom = state.kind === 'bottom';
-    return {
-      brand: state.brand.trim(), category: bottom ? 'bottom' : 'top', subcategory: null,
-      section: state.section === 'both' ? null : state.section,
-      size: bottom && state.length ? `${state.size}x${state.length}` : state.size,
-      system: bottom ? (state.length ? 'waistInseam' : 'waist') : 'alpha',
-    };
+  function anchorItems() {
+    keepDraft();
+    return [...state.pieces.values()].map((p) => {
+      const bottom = p.kind === 'bottom';
+      return {
+        brand: p.brand, category: bottom ? 'bottom' : 'top', subcategory: null,
+        section: state.section === 'both' ? null : state.section,
+        size: bottom && p.length ? `${p.size}x${p.length}` : p.size,
+        system: bottom ? (p.length ? 'waistInseam' : 'waist') : 'alpha',
+      };
+    });
   }
 
   function events() {
@@ -57,11 +95,14 @@
       { type: 'setSection', section: state.section },
       { type: 'setBody', body: state.heightCm ? { heightCm: state.heightCm } : null },
       { type: 'setPreference', preference: state.fit },
-      { type: 'setAnchorItem', item: anchorItem() },
+      { type: 'setAnchorItems', items: anchorItems() },
     ];
   }
 
-  const answered = () => ({ section: !!state.section, body: !!state.heightCm, fit: !!state.fit, anchor: !!anchorItem() });
+  const answered = () => ({
+    section: !!state.section, body: !!state.heightCm, fit: !!state.fit,
+    anchor: state.pieces.size > 0 || !!(state.brand.trim() && state.size),
+  });
 
   // ---------------------------------------------------------------------------
   // render: form
@@ -126,12 +167,24 @@
     sizePills($('sizes'), bottom ? WAISTS : TOPS, state.size, 'size');
     $('length-wrap').hidden = !bottom;
     if (bottom) sizePills($('lengths'), LENGTHS, state.length, 'length');
+    renderPieces();
 
     const a = answered();
     for (const [k, v] of Object.entries(a)) document.querySelector(`[data-q="${k}"]`).classList.toggle('answered', v);
     const n = Object.values(a).filter(Boolean).length;
     $('count').textContent = `${n} of 4 answered`;
     $('stitch').style.strokeDashoffset = String(156 - n * 39);
+  }
+
+  // Every kept piece, so the shopper sees what is saved; tap one to edit it, × to drop it.
+  function renderPieces() {
+    const current = draftKey();
+    $('pieces-wrap').hidden = state.pieces.size === 0;
+    $('pieces').innerHTML = [...state.pieces].map(([key, p]) =>
+      `<li><button type="button" class="chip" aria-pressed="${key === current}" data-piece="${esc(key)}">` +
+      `${K.logos.markup(K.logos.find({}, p.brand), p.brand)}${esc(pieceLabel(p))}</button>` +
+      `<button type="button" class="drop" data-drop="${esc(key)}" aria-label="Remove ${esc(pieceLabel(p))}">×</button></li>`).join('');
+    K.logos.guard($('pieces'));
   }
 
   // ---------------------------------------------------------------------------
@@ -158,7 +211,9 @@
 
   function applyKind(kind) {
     if (state.kind === kind) return;
-    state.kind = kind; state.size = null; state.length = null;
+    keepDraft();
+    state.kind = kind;
+    loadDraft(false);
   }
 
   // Top <-> bottom swaps the whole size area, in three beats: the old sizes blur away, the card eases to its
@@ -210,9 +265,28 @@
     else if (d.unit) { if (state.unit !== d.unit) { state.unit = d.unit; fillHeight(); showHeightError(false); } update(); }
     else if (d.fit !== undefined && t.closest('.fit-stops')) { state.fit = FITS[Number(d.fit)]; $('fit').value = d.fit; update(); }
     else if (d.kind) switchKind(d.kind);
-    else if (d.brand) { state.brand = d.brand; $('brand').value = d.brand; update(); }
-    else if (d.size) { state.size = state.size === d.size ? null : d.size; update(); }
-    else if (d.length) { state.length = state.length === d.length ? null : d.length; update(); }
+    else if (d.brand) { keepDraft(); setBrand(d.brand); $('brand').value = d.brand; update(); }
+    else if (d.size) {
+      state.size = state.size === d.size ? null : d.size;
+      // Unpicking the size drops that piece.
+      if (state.size) keepDraft(); else { state.length = null; state.pieces.delete(draftKey()); }
+      update();
+    }
+    else if (d.length) { state.length = state.length === d.length ? null : d.length; keepDraft(); update(); }
+    else if (d.piece) {
+      const p = state.pieces.get(d.piece);
+      if (!p) return;
+      keepDraft();
+      if (p.kind !== state.kind) switchKind(p.kind);
+      state.kind = p.kind; state.brand = p.brand; state.size = p.size; state.length = p.length;
+      $('brand').value = p.brand;
+      update();
+    }
+    else if (d.drop) {
+      state.pieces.delete(d.drop);
+      if (d.drop === draftKey()) { state.size = null; state.length = null; }
+      update();
+    }
   });
 
   // Errors wait until the field is left, so a half-typed "1" never shouts; fixing it clears the error at once.
@@ -232,7 +306,8 @@
     input.addEventListener('change', () => showHeightError(Number.isNaN(readHeight())));
   });
   $('fit').addEventListener('input', (e) => { state.fit = FITS[Number(e.target.value)]; update(); });
-  $('brand').addEventListener('input', (e) => { state.brand = e.target.value; update(); });
+  $('brand').addEventListener('input', (e) => { setBrand(e.target.value); update(); });
+  $('brand').addEventListener('change', () => { keepDraft(); update(); });
 
   async function persist(list) {
     if (!hasStorage) return;
@@ -304,19 +379,19 @@
   }
 
   function buildSummary() {
-    const a = anchorItem();
     const rows = [
       state.section && SECTION_LABEL[state.section],
       state.heightCm && heightText(state.heightCm),
       state.fit && `${FIT_LABEL[state.fit]} fit`,
-      a && `${a.brand} ${a.size}`,
+      ...[...state.pieces.values()].map(pieceLabel),
     ].filter(Boolean);
     $('summary').innerHTML = rows.length
-      ? rows.map((r) => `<li>${r.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)}</li>`).join('')
+      ? rows.map((r) => `<li>${esc(r)}</li>`).join('')
       : '<li class="empty">Nothing yet. FittingRoom will ask on product pages when it needs your size.</li>';
   }
 
   async function advance() {
+    keepDraft();
     if (STEPS[step] !== 'body') { goTo(step + 1); return; }
     $('next').disabled = true;
     try {
@@ -334,7 +409,7 @@
   $('back').addEventListener('click', () => goTo(step - 1));
   $('skip').addEventListener('click', () => {
     // Skipping drops that answer; skipping the last question also saves the rest.
-    if (STEPS[step] === 'anchor') { state.size = null; state.length = null; update(); }
+    if (STEPS[step] === 'anchor') { state.size = null; state.length = null; state.pieces.clear(); update(); }
     if (STEPS[step] === 'body') { state.heightCm = null; fillHeight(); showHeightError(false); update(); advance(); return; }
     goTo(step + 1);
   });
@@ -352,13 +427,13 @@
     state.section = profile.section || null;
     if (profile.body && profile.body.heightCm) state.heightCm = profile.body.heightCm;
     state.fit = FITS.includes(profile.preference) ? profile.preference : null;
-    const a = P.anchorItem(profile);
-    if (a) {
-      state.kind = a.category === 'bottom' ? 'bottom' : 'top';
-      state.brand = a.brand || '';
+    for (const a of P.anchorItems(profile)) {
+      const kind = a.category === 'bottom' ? 'bottom' : 'top';
       const [w, l] = String(a.size).split(/x/i);
-      state.size = w; state.length = l || null;
+      state.pieces.set(pieceKey(kind, a.brand || ''), { kind, brand: a.brand || '', size: w, length: l || null });
     }
+    const first = state.pieces.values().next().value;
+    if (first) Object.assign(state, { kind: first.kind, brand: first.brand, size: first.size, length: first.length });
     $('brand').value = state.brand;
     fillHeight();
     if (state.fit) $('fit').value = FITS.indexOf(state.fit);

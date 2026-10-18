@@ -85,6 +85,10 @@ input[type="range"]:focus-visible { outline-offset: 0; border-radius: 8px; }
 .suffix { position: relative; display: block; }
 .suffix i { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-style: normal; color: var(--ink-3); font-weight: 500; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.pieces { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.pieces li { display: inline-flex; align-items: center; }
+.drop { width: 28px; height: 28px; margin-left: 2px; border: 0; border-radius: 999px; background: none; color: var(--ink-3); font-size: 17px; line-height: 1; cursor: pointer; }
+.drop:hover, .drop:focus-visible { color: var(--ink); background: var(--subtle); }
 #next { min-width: 120px; }
 
 .done { outline: none; }
