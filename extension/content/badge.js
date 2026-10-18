@@ -236,8 +236,8 @@
    */
   function create(handlers) {
     handlers = handlers || {};
-    const host = document.createElement('fitcheck-badge');
-    host.setAttribute('data-fitcheck', '');
+    const host = document.createElement('fitting-room-badge');
+    host.setAttribute('data-fitting-room', '');
     const shadow = host.attachShadow({ mode: 'open' });
     shadow.innerHTML = `<style>${CSS}</style><div class="root"><div class="wrap floating"><button class="chip tone-neutral" type="button" aria-haspopup="dialog" aria-expanded="false"></button></div><div class="card" role="dialog" aria-modal="false" hidden tabindex="-1"></div></div>`;
     const wrap = shadow.querySelector('.wrap');
