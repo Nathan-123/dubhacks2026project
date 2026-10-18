@@ -19,5 +19,14 @@ const header = `/*
 `;
 // Wrapped in a block so re-pasting on the same page does not collide with earlier runs.
 const body = parts.map((p) => `// ---- ${p}\n${fs.readFileSync(path.join(ROOT, p), 'utf8')}`).join('\n');
-fs.writeFileSync(path.join(ROOT, 'probe/fit-probe.js'), `${header}{\n${body}\n}\n`);
-console.log(`wrote probe/fit-probe.js (${parts.length} parts)`);
+const output = `${header}{\n${body}\n}\n`;
+const target = path.join(ROOT, 'probe/fit-probe.js');
+if (process.argv.includes('--check')) {
+  if (!fs.existsSync(target) || fs.readFileSync(target, 'utf8') !== output) {
+    console.error('probe/fit-probe.js is stale; run npm run build:probe');
+    process.exitCode = 1;
+  } else console.log('probe/fit-probe.js is current');
+} else {
+  fs.writeFileSync(target, output);
+  console.log(`wrote probe/fit-probe.js (${parts.length} parts)`);
+}

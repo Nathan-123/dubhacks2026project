@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server/index.js",
     "test": "node --test test/*.test.js",
-    "build:probe": "node scripts/build-probe.js"
+    "build:probe": "node scripts/build-probe.js",
+    "check": "node scripts/check.js"
   },
   "engines": {
     "node": ">=20"
