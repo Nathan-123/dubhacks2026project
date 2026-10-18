@@ -76,7 +76,7 @@ Glue: [content/content.js](extension/content/content.js) (wires the modules on a
 | 0 | Shopify `/products/<handle>.js` (incl. chart in `body_html`) | content script |
 | 1 | JSON-LD `Product` / `ProductGroup` | content script |
 | 2 | `__NEXT_DATA__`, `application/json` scripts, `digitalData`/`__NUXT__` when plain JSON | content script |
-| 3 | Review widgets (Okendo, Yotpo, Judge.me, Bazaarvoice, PowerReviews, Stamped, Loox, generic): fit distribution, fit meter, per-review verdict/size/height. Never review text | content script |
+| 3 | Review platform APIs (Yotpo, in `extension/lib/reviews.js`): fit distribution and per-review size bought, usual size, height, verdict. Then review widgets (Okendo, Yotpo, Judge.me, Bazaarvoice, PowerReviews, Stamped, Loox, generic): fit distribution, fit meter, per-review verdict/size/height. Never review text | content script |
 | 4 | DOM: size control (select / radios / buttons near "size"), chart `<table>` (garment vs body vs unknown), fabric, model reference, cut words, section from URL/breadcrumbs | content script |
 | 5 | Free LLM (OpenRouter free models, or local Ollama) over trimmed page text, schema-constrained JSON, with a hallucination guard: sizes, chart values, fabric and fit stats are kept only if they appear in the page text | `POST /extract-product` |
 | 6 | Vision for image-only charts | **not built** (stretch). `imageOnly: true` lowers confidence instead |

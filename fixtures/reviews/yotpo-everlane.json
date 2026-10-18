@@ -1,0 +1,1501 @@
+{
+ "_readme": "Captured 2026-10-18 from api-cdn.yotpo.com v3 storefront reviews for Everlane womens-cloud-cable-cardigan (product 7648929939542). Trimmed to fit fields: review text, titles and users removed.",
+ "pagination": {
+  "page": 1,
+  "perPage": 50,
+  "total": 48
+ },
+ "bottomline": {
+  "totalReview": 48,
+  "averageScore": 4.4375,
+  "totalOrganicReviews": 0,
+  "organicAverageScore": 0.0,
+  "starDistribution": {
+   "1": 3,
+   "2": 2,
+   "3": 2,
+   "4": 5,
+   "5": 36
+  },
+  "customFieldsBottomline": {
+   "--119935": {
+    "title": "Fit",
+    "type": "Size",
+    "averageScore": 2,
+    "score": 2.5
+   }
+  }
+ },
+ "reviews": [
+  {
+   "id": 884956209,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Small"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Medium"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'10-6'0"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Tall"
+    }
+   }
+  },
+  {
+   "id": 861716145,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "XS"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "S or M"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'7-5'9"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender, Tall"
+    }
+   }
+  },
+  {
+   "id": 837494700,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Large"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Large"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Full-figured"
+    }
+   }
+  },
+  {
+   "id": 816944775,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "L"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "L-XL"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'1-5'3"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Hourglass, Full-figured"
+    }
+   }
+  },
+  {
+   "id": 816249021,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "XXS"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "XS"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender, Curvy on bottom"
+    }
+   }
+  },
+  {
+   "id": 814061888,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "I purchased a small"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender"
+    }
+   }
+  },
+  {
+   "id": 812614126,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Mm"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'0 or less"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Petite"
+    }
+   }
+  },
+  {
+   "id": 812495778,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "large"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "large"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Hourglass"
+    }
+   }
+  },
+  {
+   "id": 806442151,
+   "score": 5,
+   "customFields": null
+  },
+  {
+   "id": 806433962,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Large"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Large"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'7-5'9"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Curvy on bottom"
+    }
+   }
+  },
+  {
+   "id": 805936842,
+   "score": 5,
+   "customFields": null
+  },
+  {
+   "id": 805917547,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "S"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "XS"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'1-5'3"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender, Petite"
+    }
+   }
+  },
+  {
+   "id": 802983125,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "XL"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "XXL"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Full-figured"
+    }
+   }
+  },
+  {
+   "id": 800095799,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Small"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "XS or S"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'1-5'3"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender"
+    }
+   }
+  },
+  {
+   "id": 795811659,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "M"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "S"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender"
+    }
+   }
+  },
+  {
+   "id": 795548007,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Everlane.com"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Large"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'7-5'9"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Full-figured"
+    }
+   }
+  },
+  {
+   "id": 795355669,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "S"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "S"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'7-5'9"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender"
+    }
+   }
+  },
+  {
+   "id": 795235505,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Medium"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Small to medium"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender"
+    }
+   }
+  },
+  {
+   "id": 795081162,
+   "score": 5,
+   "customFields": null
+  },
+  {
+   "id": 794219174,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Small"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender"
+    }
+   }
+  },
+  {
+   "id": 794079041,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Large"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Large or medium"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Curvy on bottom"
+    }
+   }
+  },
+  {
+   "id": 794008215,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "XS"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "XS/S"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'1-5'3"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Petite"
+    }
+   }
+  },
+  {
+   "id": 792850336,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Small"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Small"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender"
+    }
+   }
+  },
+  {
+   "id": 792569640,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "XS"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "UK 6"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'1-5'3"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Petite"
+    }
+   }
+  },
+  {
+   "id": 792428778,
+   "score": 5,
+   "customFields": {
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'1-5'3"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Hourglass"
+    }
+   }
+  },
+  {
+   "id": 792051458,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Medium"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Medium"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'7-5'9"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender"
+    }
+   }
+  },
+  {
+   "id": 790699127,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "XS"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "S"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Curvy on top"
+    }
+   }
+  },
+  {
+   "id": 790569235,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Medium"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "medium"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Hourglass"
+    }
+   }
+  },
+  {
+   "id": 789707517,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "L"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "L"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Curvy on top"
+    }
+   }
+  },
+  {
+   "id": 787748109,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "M"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "M"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'1-5'3"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Petite, Hourglass"
+    }
+   }
+  },
+  {
+   "id": 787542750,
+   "score": 5,
+   "customFields": null
+  },
+  {
+   "id": 786847400,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Mediym"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Mediym"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Curvy on bottom"
+    }
+   }
+  },
+  {
+   "id": 789529967,
+   "score": 5,
+   "customFields": null
+  },
+  {
+   "id": 779973816,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "L"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "L"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'7-5'9"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Full-figured, Tall"
+    }
+   }
+  },
+  {
+   "id": 779438151,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Medium"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Medium"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'10-6'0"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender"
+    }
+   }
+  },
+  {
+   "id": 778269143,
+   "score": 5,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "medium"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Medium large"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'7-5'9"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Curvy on top"
+    }
+   }
+  },
+  {
+   "id": 812472822,
+   "score": 4,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Medium"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    }
+   }
+  },
+  {
+   "id": 812376350,
+   "score": 4,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "XL"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "L-XL"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Full-figured"
+    }
+   }
+  },
+  {
+   "id": 797778985,
+   "score": 4,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "xxs"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "xs/s"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'1-5'3"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Petite"
+    }
+   }
+  },
+  {
+   "id": 796453119,
+   "score": 4,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Xs"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Xs"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender"
+    }
+   }
+  },
+  {
+   "id": 791294852,
+   "score": 4,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "10"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "8"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'7-5'9"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender"
+    }
+   }
+  },
+  {
+   "id": 817019494,
+   "score": 3,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "M"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "L"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'7-5'9"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Curvy on bottom"
+    }
+   }
+  },
+  {
+   "id": 806399086,
+   "score": 3,
+   "customFields": null
+  },
+  {
+   "id": 793977616,
+   "score": 2,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "medium"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "small"
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'10-6'0"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Tall, Slender"
+    }
+   }
+  },
+  {
+   "id": 785083420,
+   "score": 2,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "M"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "M-L"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 2
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'7-5'9"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Hourglass"
+    }
+   }
+  },
+  {
+   "id": 814348408,
+   "score": 1,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Small"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Small"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Slender"
+    }
+   }
+  },
+  {
+   "id": 795410544,
+   "score": 1,
+   "customFields": {
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    }
+   }
+  },
+  {
+   "id": 779225323,
+   "score": 1,
+   "customFields": {
+    "120038": {
+     "title": "Size Purchased",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Medium"
+    },
+    "120039": {
+     "title": "Usual Size",
+     "formId": 119897,
+     "fieldType": "ProductFreeText",
+     "value": "Medium"
+    },
+    "119935": {
+     "title": "Fit",
+     "formId": 119897,
+     "fieldType": "Size",
+     "value": 3
+    },
+    "119939": {
+     "title": "Height",
+     "formId": 119897,
+     "fieldType": "SingleChoice",
+     "value": "5'4-5'6"
+    },
+    "119938": {
+     "title": "Body type",
+     "formId": 119897,
+     "fieldType": "MultipleChoice",
+     "value": "Curvy on bottom"
+    }
+   }
+  }
+ ]
+}

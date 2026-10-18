@@ -6,7 +6,7 @@
 importScripts('lib/sizes.js', 'lib/contract.js', 'lib/score.js', 'lib/profile.js');
 const K = self.FitKit;
 
-const CONTENT_FILES = ['lib/sizes.js', 'lib/contract.js', 'lib/score.js', 'lib/classification.js', 'lib/extract.js', 'lib/profile.js', 'lib/returns.js', 'content/content.js'];
+const CONTENT_FILES = ['lib/sizes.js', 'lib/contract.js', 'lib/score.js', 'lib/classification.js', 'lib/reviews.js', 'lib/extract.js', 'lib/profile.js', 'lib/returns.js', 'content/content.js'];
 const SCRIPT_ID = 'fitting-room-stores';
 const DEFAULT_SETTINGS = { backend: 'http://localhost:8787', serverScoring: false, modelConfidence: true };
 const confidenceCache = new Map(); // evidence JSON -> model answer (the server caches too)
