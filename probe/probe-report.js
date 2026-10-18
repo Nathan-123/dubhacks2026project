@@ -59,7 +59,7 @@
     reviewFit: product ? product.reviewFit : null,
   };
 
-  console.log('%cFitCheck probe', 'font-weight:bold;font-size:14px', verdict, `(${ms}ms)`);
+  console.log('%cFitting Room probe', 'font-weight:bold;font-size:14px', verdict, `(${ms}ms)`);
   console.table(fields.map((f) => ({ field: f.field, filled: f.filled ? 'yes' : '', tier: f.tier })));
   console.log('Raw signals', signals);
   if (rung0) console.log('Rung-0 badge would say:', rung0.verdict, '—', rung0.reason);

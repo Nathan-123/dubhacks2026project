@@ -7,7 +7,7 @@ const os = require('os');
 const path = require('path');
 
 process.env.OPENROUTER_API_KEY = ''; // tests never call OpenRouter, even if .env has a key
-process.env.FIT_CACHE_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'fitcheck-cache-'));
+process.env.FIT_CACHE_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'fitting-room-cache-'));
 process.env.OLLAMA_URL = 'http://127.0.0.1:9'; // no local model in these tests; see llm.test.js
 const { createServer } = require('../server/index.js');
 

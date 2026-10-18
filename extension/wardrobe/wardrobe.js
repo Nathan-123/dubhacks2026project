@@ -372,7 +372,7 @@ $('export').addEventListener('click', async () => {
   const blob = new Blob([JSON.stringify({ profile: data.profile, stores: data.stores, settings: data.settings }, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'fitcheck-data.json';
+  a.download = 'fitting-room-data.json';
   a.click();
   URL.revokeObjectURL(a.href);
 });
