@@ -10,11 +10,11 @@
  */
 (function (root, factory) {
   const isNode = typeof module === 'object' && module.exports;
-  const deps = isNode ? { sizes: require('./sizes.js'), contract: require('./contract.js') } : root.FitKit;
-  const mod = factory(deps.sizes, deps.contract);
+  const deps = isNode ? { sizes: require('./sizes.js'), contract: require('./contract.js'), classification: require('./classification.js') } : root.FitKit;
+  const mod = factory(deps.sizes, deps.contract, deps.classification);
   if (isNode) module.exports = mod;
   else (root.FitKit = root.FitKit || {}).extract = mod;
-})(typeof globalThis !== 'undefined' ? globalThis : this, function (sizes, contract) {
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (sizes, contract, classification) {
   'use strict';
 
   const { fill } = contract;
@@ -54,36 +54,9 @@
   // ---------------------------------------------------------------------------
   // classification
 
-  const CATEGORY_WORDS = [
-    ['outerwear', /\b(jacket|coat|parka|blazer|puffer|trench|anorak|windbreaker|gilet|vest)\b/i],
-    ['dress', /\b(dress|jumpsuit|romper|gown)\b/i],
-    ['bottom', /\b(jeans?|pants?|trousers?|shorts|skirt|chinos?|leggings|joggers?|sweatpants|denim)\b/i],
-    ['shoes', /\b(shoes?|sneakers?|boots?|sandals?|loafers?|heels|trainers|slides)\b/i],
-    ['top', /\b(t-?shirt|tee|shirt|blouse|sweater|hoodie|sweatshirt|polo|tank|cardigan|top|crewneck|knit|pullover|henley|camisole|turtleneck)\b/i],
-  ];
+  const { categorize, sectionOf } = classification;
   const OUT_OF_SCOPE = /(^|[\/\s_-])(kids?|girls?|boys?|baby|babies|toddlers?|infants?|maternity|junior|youth)([\/\s_-]|$)/i;
   const LISTING_PATH = /\/(collections|category|categories|c|shop|search|catalog)(\/[^\/]*)?\/?$/i;
-
-  function categorize(text) {
-    for (const [cat, re] of CATEGORY_WORDS) {
-      const m = String(text || '').match(re);
-      if (m) {
-        let sub = m[1].toLowerCase().replace(/^tee$/, 't-shirt').replace(/^tshirt$/, 't-shirt');
-        if (cat === 'bottom') sub = sub.replace(/^(jean|pant|trouser|chino|jogger)$/, '$1s');
-        else if (sub !== 'dress') sub = sub.replace(/s$/, '');
-        return { category: cat, subcategory: sub };
-      }
-    }
-    return null;
-  }
-
-  function sectionOf(text) {
-    const s = String(text || '').toLowerCase();
-    if (/(^|[\/\s_-])(women|womens|woman|ladies)([\/\s_'-]|$)/.test(s)) return 'women';
-    if (/(^|[\/\s_-])(men|mens|man)([\/\s_'-]|$)/.test(s)) return 'men';
-    if (/(^|[\/\s_-])unisex([\/\s_-]|$)/.test(s)) return 'unisex';
-    return null;
-  }
 
   function breadcrumbs(doc) {
     const el = $(doc, 'nav[aria-label*="readcrumb" i], [class*="breadcrumb" i], ol[itemtype*="BreadcrumbList"]');

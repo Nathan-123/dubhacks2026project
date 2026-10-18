@@ -276,7 +276,7 @@
     // Optional backend normalization; it only ever sees the scrubbed line items.
     const parsed = await send('parseOrder', { payload: { host: location.hostname, brand: siteBrand, items } });
     const normalized = (parsed && parsed.ok && parsed.items) || items.map((it) => {
-      const cat = K.extract._internal.categorize(it.name) || {};
+      const cat = K.classification.categorize(it.name) || {};
       return { ...it, brand: siteBrand, category: cat.category || null, subcategory: cat.subcategory || null };
     });
     const date = new Date().toISOString().slice(0, 10);
