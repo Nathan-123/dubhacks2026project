@@ -1,0 +1,37 @@
+{
+  "ok": true,
+  "product": {
+    "identity": {
+      "brand": "Little Field",
+      "name": "Linen Wrap Dress",
+      "category": "dress",
+      "section": "women"
+    },
+    "sizes": {
+      "system": "alpha",
+      "options": [
+        {
+          "label": "XS"
+        },
+        {
+          "label": "S"
+        },
+        {
+          "label": "M",
+          "selected": true
+        },
+        {
+          "label": "L",
+          "available": false
+        }
+      ]
+    },
+    "sizeChart": {
+      "imageOnly": true
+    },
+    "_src": {
+      "identity.brand": "dom",
+      "sizes.options": "dom"
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "product": {
+    "host": "uniqlo.com",
+    "identity": {
+      "brand": "Uniqlo",
+      "name": "Selvedge Slim-Fit Jeans",
+      "productId": "E455365-000",
+      "category": "bottom",
+      "subcategory": "jeans",
+      "section": "men"
+    },
+    "sizes": {
+      "system": "waist",
+      "options": [
+        {
+          "label": "28"
+        },
+        {
+          "label": "29",
+          "selected": true
+        },
+        {
+          "label": "30"
+        },
+        {
+          "label": "31"
+        },
+        {
+          "label": "32",
+          "available": false
+        },
+        {
+          "label": "33"
+        }
+      ]
+    },
+    "reviewFit": {
+      "aggregate": {
+        "label": "true to size",
+        "n": 188
+      }
+    },
+    "_src": {
+      "identity.brand": "stateBlob",
+      "sizes.options": "stateBlob",
+      "reviewFit.aggregate": "stateBlob"
+    }
+  }
+}

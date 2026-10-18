@@ -1,0 +1,59 @@
+{
+  "ok": true,
+  "product": {
+    "identity": {
+      "brand": "Northbound Supply",
+      "name": "Heavyweight Pocket Tee",
+      "category": "top",
+      "section": "men",
+      "cutHint": "boxy"
+    },
+    "sizes": {
+      "system": "alpha",
+      "options": [
+        {
+          "label": "S",
+          "available": true
+        },
+        {
+          "label": "M",
+          "available": true,
+          "selected": true
+        },
+        {
+          "label": "L",
+          "available": false
+        },
+        {
+          "label": "XL",
+          "available": true
+        }
+      ]
+    },
+    "sizeChart": {
+      "kind": "garment",
+      "unit": "in"
+    },
+    "fabric": {
+      "stretch": true
+    },
+    "modelRef": {
+      "heightCm": 185,
+      "sizeWorn": "L"
+    },
+    "reviewFit": {
+      "distribution": {
+        "runsSmall": 0.62,
+        "trueToSize": 0.3,
+        "runsLarge": 0.08
+      },
+      "n": 412
+    },
+    "_src": {
+      "identity.brand": "shopifyJson",
+      "sizes.options": "shopifyJson",
+      "sizeChart": "shopifyJson",
+      "reviewFit.distribution": "reviewWidget"
+    }
+  }
+}

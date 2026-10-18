@@ -1,0 +1,13 @@
+{
+  "_readme": "Hand-seeded demo profile. Dates are relative (daysAgo) and resolved when loaded. Edit freely; every item stays editable in the wardrobe tab.",
+  "stated": {
+    "men:bottom": { "label": "29", "system": "waist" },
+    "men:top": { "label": "M", "system": "alpha" }
+  },
+  "wardrobe": [
+    { "brand": "Uniqlo", "name": "Selvedge Slim-Fit Jeans", "category": "bottom", "subcategory": "jeans", "section": "men", "size": "29", "daysAgo": 9, "source": "order", "price": 49.9 },
+    { "brand": "Abercrombie & Fitch", "name": "Sherpa-Lined Trucker Jacket", "category": "outerwear", "subcategory": "jacket", "section": "men", "size": "XL", "daysAgo": 210, "feedback": "small", "source": "order", "price": 150 },
+    { "brand": "Patagonia", "name": "Better Sweater Jacket", "category": "outerwear", "subcategory": "jacket", "section": "men", "size": "L", "daysAgo": 120, "feedback": "perfect", "source": "manual", "price": 139 },
+    { "brand": "Everlane", "name": "The Organic Cotton Crew", "category": "top", "subcategory": "t-shirt", "section": "men", "size": "M", "daysAgo": 22, "source": "order", "price": 30 }
+  ]
+}

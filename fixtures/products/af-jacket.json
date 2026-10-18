@@ -1,0 +1,29 @@
+{
+  "_readme": "Hand-written Product for scorer tests and the demo's 'Likely return' beat. SYNTHETIC.",
+  "url": "https://www.abercrombie.com/shop/us/p/sherpa-lined-utility-jacket-1234",
+  "host": "abercrombie.com",
+  "capturedAt": "2026-10-17T22:10:00Z",
+  "identity": { "brand": "Abercrombie & Fitch", "name": "Sherpa-Lined Utility Jacket", "productId": "1234", "category": "outerwear", "subcategory": "jacket", "section": "men", "cutHint": null },
+  "sizes": {
+    "system": "alpha",
+    "options": [
+      { "label": "XS", "available": true, "selected": false },
+      { "label": "S", "available": true, "selected": false },
+      { "label": "M", "available": true, "selected": false },
+      { "label": "L", "available": true, "selected": false },
+      { "label": "XL", "available": true, "selected": false }
+    ],
+    "selector": null
+  },
+  "sizeChart": null,
+  "fabric": { "composition": [{ "material": "cotton", "pct": 100 }], "stretch": false },
+  "modelRef": null,
+  "reviewFit": { "aggregate": { "scale": -0.3, "label": "runs small", "n": 96, "source": "bazaarvoice" }, "distribution": null, "reviewers": null, "n": 96 },
+  "price": { "amount": 150, "currency": "USD" },
+  "image": null,
+  "_src": {
+    "identity.brand": "jsonld", "identity.name": "jsonld", "identity.productId": "jsonld", "identity.category": "dom",
+    "identity.subcategory": "dom", "identity.section": "dom", "sizes.options": "jsonld", "fabric": "dom",
+    "reviewFit.aggregate": "reviewWidget", "price": "jsonld"
+  }
+}

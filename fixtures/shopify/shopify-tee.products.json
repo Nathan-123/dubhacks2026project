@@ -1,0 +1,19 @@
+{
+  "_readme": "SYNTHETIC stub of /products/<handle>.js for the shopify-tee fixture.",
+  "id": 7012345678,
+  "title": "Heavyweight Pocket Tee",
+  "handle": "heavyweight-pocket-tee",
+  "vendor": "Northbound Supply",
+  "type": "T-Shirts",
+  "tags": ["mens", "tees"],
+  "price": 3800,
+  "featured_image": "//cdn.shopify.com/s/files/tee.jpg",
+  "options": [{ "name": "Color", "position": 1, "values": ["Black"] }, { "name": "Size", "position": 2, "values": ["S", "M", "L", "XL"] }],
+  "variants": [
+    { "id": 1, "option1": "Black", "option2": "S", "available": true, "price": 3800 },
+    { "id": 2, "option1": "Black", "option2": "M", "available": true, "price": 3800 },
+    { "id": 3, "option1": "Black", "option2": "L", "available": false, "price": 3800 },
+    { "id": 4, "option1": "Black", "option2": "XL", "available": true, "price": 3800 }
+  ],
+  "description": "<p>Our heaviest tee, cut boxy. 95% cotton, 5% elastane.</p><h4>Product measurements (laid flat, inches)</h4><table><tr><th>Size</th><th>Pit to pit</th><th>Body length</th></tr><tr><td>S</td><td>20</td><td>27</td></tr><tr><td>M</td><td>21</td><td>28</td></tr><tr><td>L</td><td>22.5</td><td>29</td></tr><tr><td>XL</td><td>24</td><td>30</td></tr></table>"
+}

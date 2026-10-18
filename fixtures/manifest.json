@@ -1,0 +1,11 @@
+{
+  "_readme": "Each case: page HTML, the URL it was captured from, an optional Shopify /products/<handle>.js stub, and the expected extraction (subset match). All current cases are SYNTHETIC; add real saved pages as fixtures/pages/<store>-<product>.html once the probe picks the demo stores.",
+  "cases": [
+    { "name": "shopify-tee", "page": "fixtures/pages/shopify-tee.html", "url": "https://northbound.example/products/heavyweight-pocket-tee?variant=2", "shopify": "fixtures/shopify/shopify-tee.products.json", "expected": "fixtures/expected/shopify-tee.json" },
+    { "name": "next-jeans", "page": "fixtures/pages/next-jeans.html", "url": "https://www.uniqlo.com/us/en/products/E455365-000/00?colorDisplayCode=69", "expected": "fixtures/expected/next-jeans.json" },
+    { "name": "indie-select", "page": "fixtures/pages/indie-select.html", "url": "https://littlefield.example/dresses/linen-wrap-dress", "expected": "fixtures/expected/indie-select.json" },
+    { "name": "listing", "page": "fixtures/pages/listing.html", "url": "https://northbound.example/collections/mens-tees", "expected": "fixtures/expected/listing.json" },
+    { "name": "kids", "page": "fixtures/pages/kids.html", "url": "https://store.example/kids/fleece-hoodie", "expected": "fixtures/expected/kids.json" },
+    { "name": "no-sizes", "page": "fixtures/pages/no-sizes.html", "url": "https://store.example/p/mystery-jacket", "expected": "fixtures/expected/no-sizes.json" }
+  ]
+}

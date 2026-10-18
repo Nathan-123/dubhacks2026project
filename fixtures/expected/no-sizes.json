@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "reason": "floor-missing",
+  "missing": [
+    "sizes.options"
+  ]
+}

@@ -1,0 +1,65 @@
+/* FitCheck design tokens + base components, shared by the popup and wardrobe pages.
+   The in-page card mirrors these values inside its shadow root (content/badge.js). */
+:root {
+  --surface: #ffffff; --raised: #ffffff; --bg: #f6f7f9; --subtle: #f2f3f6; --line: #e7e9ee; --line-2: #d9dce3;
+  --ink: #101216; --ink-2: #474c57; --ink-3: #7d828d; --focus: #3b5bfd;
+  --brand-a: #5146ff; --brand-b: #8b5cf6; --brand-ink: #4338ca;
+  --good: #0f7a3f; --good-soft: #e9f7ef; --caution: #a15c00; --caution-soft: #fff4df;
+  --action: #2449d8; --action-soft: #ebf0ff; --bad: #b42318; --bad-soft: #fdeeec;
+  --shadow-1: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.10);
+  --shadow-2: 0 12px 32px -8px rgba(16,24,40,.18), 0 4px 10px -4px rgba(16,24,40,.08);
+  --radius: 14px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface: #17181c; --raised: #1d1f24; --bg: #111215; --subtle: #22242a; --line: #2c2f36; --line-2: #3a3e47;
+    --ink: #f2f3f5; --ink-2: #b9bdc6; --ink-3: #8a8f99; --focus: #8ea2ff; --brand-ink: #a5b4fc;
+    --good: #4ad086; --good-soft: rgba(74,208,134,.12); --caution: #f2b13c; --caution-soft: rgba(242,177,60,.13);
+    --action: #8ea2ff; --action-soft: rgba(142,162,255,.14); --bad: #ff8a80; --bad-soft: rgba(255,138,128,.13);
+    --shadow-1: 0 1px 2px rgba(0,0,0,.4); --shadow-2: 0 16px 40px -8px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--bg); }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; letter-spacing: -0.003em;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.mark { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 7px; background: linear-gradient(135deg, var(--brand-a), var(--brand-b)); color: #fff; flex: none; }
+.mark svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.brandline { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; letter-spacing: -0.015em; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px;
+  border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink);
+  font-weight: 600; font-size: 13.5px; cursor: pointer; transition: background .12s, border-color .12s, box-shadow .12s;
+}
+.btn:hover { border-color: var(--ink-3); }
+.btn.primary { background: linear-gradient(135deg, var(--brand-a), var(--brand-b)); border-color: transparent; color: #fff; box-shadow: 0 1px 2px rgba(81,70,255,.3); }
+.btn.primary:hover { box-shadow: 0 4px 14px -2px rgba(81,70,255,.45); }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--ink-2); }
+.btn.ghost:hover { background: var(--subtle); color: var(--ink); }
+.btn.danger { color: var(--bad); }
+.btn.danger:hover { border-color: var(--bad); background: var(--bad-soft); }
+.btn.sm { height: 30px; padding: 0 10px; font-size: 12.5px; border-radius: 8px; }
+
+.pill { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px; margin-top: 4px; border-radius: 99px; background: var(--subtle); color: var(--ink-2); font-size: 12px; font-weight: 550; }
+.pill.ok { background: var(--good-soft); color: var(--good); }
+.pill .dot { background: currentColor; }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--line-2); flex: none; }
+.dot.ok { background: var(--good); box-shadow: 0 0 0 3px var(--good-soft); }
+.dot.warn { background: var(--caution); box-shadow: 0 0 0 3px var(--caution-soft); }
+.dot.off { background: var(--ink-3); }
+
+input:not([type="checkbox"]), select, textarea {
+  height: 36px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--surface);
+}
+textarea { height: auto; padding: 8px 10px; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--brand-a); box-shadow: 0 0 0 3px rgba(81,70,255,.15); }

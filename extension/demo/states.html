@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FitCheck Badge States</title>
+  <style>
+    :root { --bg: #fafafa; --fg: #1d1d1f; --card: #fff; --line: #e4e4e8; --mut: #6b6b75; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #141417; --fg: #ececf1; --card: #1f1f23; --line: #34343c; --mut: #a5a5b0; } }
+    :root[data-theme="dark"] { --bg: #141417; --fg: #ececf1; --card: #1f1f23; --line: #34343c; --mut: #a5a5b0; }
+    body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.45 system-ui, sans-serif; }
+    main { max-width: 980px; margin: 0 auto; padding: 24px 16px; }
+    h1 { font-size: 20px; margin: 0 0 4px; }
+    p.lede { color: var(--mut); margin: 0 0 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+    .tile { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+    .tile h2 { font-size: 13px; margin: 0 0 2px; }
+    .tile .cond { font-size: 12px; color: var(--mut); margin-bottom: 10px; min-height: 32px; }
+    .fake-sizes { display: flex; gap: 6px; }
+    .fake-sizes span { border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; font-weight: 600; }
+    .fake-sizes span.sel { border-color: var(--fg); }
+    .tile.darkstore { background: #111; color: #eee; }
+    .tile.darkstore .fake-sizes span { border-color: #444; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Badge states</h1>
+    <p class="lede">All eight states (plus pending and AI-assessed confidence) rendered from hand-written Recommendations, docked next to a fake size picker. Click a badge to open its card; Escape closes it. Open this page from the unpacked extension: <code>chrome-extension://&lt;id&gt;/demo/states.html</code>.</p>
+    <div class="grid" id="grid"></div>
+  </main>
+  <script src="../content/badge.js"></script>
+  <script>
+    const why = (o, base) => ({ offset: { steps: o, label: o < -0.25 ? 'runs small' : o > 0.25 ? 'runs large' : 'true to size', signals: [{ key: 'distribution', steps: o, weight: 0.6, detail: '62% small · 30% true · 8% large' }] }, baseline: base === false ? null : { source: 'stated', label: 'M' }, src: { 'identity.brand': 'jsonld', 'sizes.options': 'shopifyJson', 'reviewFit.distribution': 'reviewWidget' }, confidenceParts: [{ pts: 30, why: 'baseline from stated' }, { pts: 30, why: 'review evidence' }, { pts: 6, why: 'garment size chart' }], confidenceSource: { kind: 'rules' } });
+    const scores = (best, sel, vals) => ['S', 'M', 'L', 'XL'].map((l, i) => ({ label: l, score: (vals || [22, 62, 93, 40])[i], available: l !== 'XL', selected: l === sel, best: l === best }));
+    const ask = { type: 'usualSize', question: 'What size do you usually buy?', options: ['S', 'M', 'L', 'XL'] };
+    const dist = { small: 0.62, true: 0.30, large: 0.08, n: 412 };
+    const P = (o) => ({ personalized: true, basis: ['Your usual size', '412 reviews', 'Garment measurements'], caveats: [], ...o });
+    const CASES = [
+      ['Runs small', 'No baseline, offset known', { state: 'runsSmall', verdict: 'Runs small', personalized: false, reason: '62% of 412 reviewers said it runs small — most buyers sized up.', distribution: dist, ask, scores: [], why: why(-0.86, false) }],
+      ['True to size', 'No baseline, offset neutral', { state: 'trueToSize', verdict: 'True to size', personalized: false, reason: '188 reviews say this runs true to size.', distribution: { small: 0.12, true: 0.80, large: 0.08, n: 188 }, ask, scores: [], why: why(0.05, false) }],
+      ['Good buy', 'Fit ≥ 80, selected size optimal', P({ state: 'goodBuy', verdict: 'Good buy · M', size: 'M', fit: 94, fitLabel: 'Great fit', confidence: 82, confidenceLabel: 'High', basis: ['Your Uniqlo fit feedback', '188 reviews'], reason: 'M matches your Uniqlo M that fit well; reviews say true to size (188).', scores: scores('M', 'M', [30, 94, 45, 8]), why: why(0) })],
+      ['Size up', 'Selected size is worse', P({ state: 'sizeChange', verdict: 'Size up → L', size: 'L', selected: 'M', fit: 93, fitLabel: 'Great fit', confidence: 66, confidenceLabel: 'Medium', reason: 'You picked M, but this runs small for you. L is the better size.', scores: scores('L', 'M'), why: why(-0.86) })],
+      ['Fit risk', 'Best fit 50–79', P({ state: 'fitRisk', verdict: 'Fit risk · L', size: 'L', fit: 71, fitLabel: 'Risky fit', confidence: 58, confidenceLabel: 'Medium', reason: 'L is the closest, but pitToPit is 1.2in smaller than your reference item.', scores: scores('L', null, [10, 55, 71, 40]), why: why(-0.5) })],
+      ['Likely return', 'Best fit < 50', P({ state: 'likelyReturn', verdict: 'Likely return', size: 'XL', fit: 22, fitLabel: 'Poor fit', confidence: 74, confidenceLabel: 'High', basis: ['Your Abercrombie & Fitch fit feedback', '96 reviews'], reason: 'Even XL, the largest size available, runs small for you (based on your Abercrombie & Fitch XL that ran small).', alert: { kind: 'duplicate', text: 'You own 2 like this (jacket).' }, scores: ['XS', 'S', 'M', 'L', 'XL'].map((l, i) => ({ label: l, score: [3, 3, 3, 3, 22][i], available: true, best: l === 'XL' })), why: why(-0.48) })],
+      ['Best guess', 'Confidence below threshold', P({ state: 'lowConfidence', verdict: 'Best guess · M', size: 'M', fit: null, confidence: 32, confidenceLabel: 'Low', basis: ['Your usual size'], caveats: [], reason: 'Based on your usual M. We couldn’t find reviews or measurements for this item, so we can’t tell yet whether it runs small or large.', helpMost: 'No fit reviews found — a past order from this brand would help most', scores: scores('M', null).map((x) => ({ ...x, score: null })), why: why(0) })],
+      ["Can't read this page", 'Extraction failed', { state: 'failed', verdict: "Can't read this page", personalized: false, reason: "Couldn't find the size options on this page.", missing: ['sizes.options'], scores: [] }],
+      ['Pending', 'Extraction in progress', { state: 'pending', verdict: 'Checking fit…' }],
+      ['AI-assessed confidence', 'OpenRouter free model', P({ state: 'goodBuy', verdict: 'Good buy · M', size: 'M', fit: 94, fitLabel: 'Great fit', confidence: 71, confidenceLabel: 'High', reason: 'M matches your usual M; reviews say true to size (188).', scores: scores('M', null, [30, 94, 45, 8]), why: { ...why(0), confidenceSource: { kind: 'model', model: 'openrouter/free', rules: 62, note: 'Your own size and plenty of reviews agree.' } } })],
+      ['On a dark store page', 'Contrast check', P({ state: 'sizeChange', verdict: 'Size up → L', size: 'L', selected: 'M', fit: 93, fitLabel: 'Great fit', confidence: 66, confidenceLabel: 'Medium', reason: 'You picked M, but this runs small for you. L is the better size.', scores: scores('L', 'M'), why: why(-0.86) }), {}, true],
+    ];
+    const grid = document.getElementById('grid');
+    const badges = [];
+    for (const [title, cond, rec, meta, dark] of CASES) {
+      const tile = document.createElement('div');
+      tile.className = `tile${dark ? ' darkstore' : ''}`;
+      tile.innerHTML = `<h2>${title}</h2><div class="cond">${cond}</div><div class="fake-sizes"><span>S</span><span class="sel">M</span><span>L</span><span>XL</span></div>`;
+      grid.appendChild(tile);
+      const b = FitKit.badge.create({ onAsk: (l) => alert(`Would save usual size ${l}`), onOpenWardrobe: () => {}, onDismissAsk: () => {} });
+      b.mount(tile.querySelector('.fake-sizes'));
+      b.render({ product: {}, ...rec }, meta || {});
+      badges.push(b);
+    }
+    const openIdx = new URLSearchParams(location.search).get('open');
+    if (openIdx !== null && badges[openIdx]) setTimeout(() => badges[openIdx].open(), 50);
+  </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>FitCheck</title>
+  <link rel="stylesheet" href="../ui/tokens.css">
+  <style>
+    body { width: 320px; margin: 0; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 12px; border-bottom: 1px solid var(--line); }
+    main { padding: 14px 16px 16px; }
+    .site { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+    .avatar { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: var(--subtle); font-weight: 700; font-size: 16px; color: var(--ink-2); text-transform: uppercase; flex: none; }
+    .site .host { font-weight: 650; font-size: 14px; word-break: break-all; }
+    .actions { display: grid; gap: 8px; margin-top: 12px; }
+    .actions .btn { width: 100%; }
+    .note { margin: 10px 0 0; font-size: 12px; color: var(--ink-3); line-height: 1.45; }
+    .status-list { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); display: grid; gap: 8px; }
+    .status-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; }
+    .status-row .k { color: var(--ink-2); }
+    .status-row .v { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 550; }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="brandline"><span class="mark" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M10 6.2a1.7 1.7 0 10-1.7-1.7M10 6.2v1.3L3.4 12.3a1 1 0 00.6 1.8h12a1 1 0 00.6-1.8L10 7.5"/></svg></span>FitCheck</span>
+    <button class="btn ghost sm" id="wardrobe" type="button">Wardrobe</button>
+  </header>
+  <main>
+    <div class="site">
+      <div class="avatar" id="avatar" aria-hidden="true">·</div>
+      <div style="min-width:0">
+        <div class="host" id="host">—</div>
+        <span class="pill" id="status"><span class="dot"></span><span id="status-text">Checking…</span></span>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="enable" type="button" hidden>Turn on for this store</button>
+      <button class="btn" id="once" type="button" hidden>Just check this page</button>
+      <button class="btn ghost" id="disable" type="button" hidden>Turn off for this store</button>
+    </div>
+    <p class="note" id="note">FitCheck only runs on stores you turn on. Your browser asks once per store, and your sizes never leave this device.</p>
+    <div class="status-list" aria-label="Service status">
+      <div class="status-row"><span class="k">Backend</span><span class="v" id="s-backend"><span class="dot"></span>—</span></div>
+      <div class="status-row"><span class="k">Page reader (AI)</span><span class="v" id="s-llm"><span class="dot"></span>—</span></div>
+      <div class="status-row"><span class="k">Confidence model</span><span class="v" id="s-conf"><span class="dot"></span>—</span></div>
+    </div>
+  </main>
+  <script src="popup.js"></script>
+</body>
+</html>
