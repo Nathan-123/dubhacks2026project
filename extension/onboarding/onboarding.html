@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Fitting Room setup</title>
+  <title>FittingRoom onboarding</title>
   <link rel="stylesheet" href="../ui/tokens.css">
   <link rel="stylesheet" href="onboarding.css">
 </head>
@@ -12,10 +12,10 @@
   <div class="paper" aria-hidden="true"><div class="mosaic" id="mosaic"></div></div>
 
   <main class="layout">
+    <p class="hero">FittingRoom</p>
     <section class="form" aria-labelledby="title">
       <header class="masthead">
-        <div class="masthead-row"><span class="brandline">Fitting Room</span><span class="step-count" id="step-count" aria-live="polite">1 of 4</span></div>
-        <h1 id="title">Let’s find your size.</h1>
+        <div class="masthead-row"><h1 id="title">Let’s find your size.</h1><span class="step-count" id="step-count" aria-live="polite">1 of 4</span></div>
         <p class="lede">Four quick questions. Your answers shape every size we suggest.</p>
       </header>
 
@@ -66,7 +66,7 @@
 
       <div class="q" data-q="anchor" hidden>
         <h2 id="q-anchor">What fits you best right now?</h2>
-        <p class="why">One piece you own and love. We compare every other brand against it.</p>
+        <p class="why">Pieces you own and love. Add a top and a bottom from as many brands as you like. We compare every other brand against them.</p>
         <div class="switch lg" role="radiogroup" aria-label="Kind of piece">
           <button type="button" role="radio" aria-checked="true" data-kind="top">Top</button>
           <button type="button" role="radio" aria-checked="false" data-kind="bottom">Bottom</button>
@@ -81,11 +81,15 @@
             <div class="choices sizes" id="lengths" role="radiogroup" aria-labelledby="length-label"></div>
           </div>
         </div>
+        <div id="pieces-wrap" hidden>
+          <div class="field-label" id="pieces-label">Your pieces</div>
+          <ul class="pieces" id="pieces" aria-labelledby="pieces-label"></ul>
+        </div>
       </div>
 
       <div class="q done" data-q="done" id="done" hidden tabindex="-1">
         <h2>You’re set.</h2>
-        <p class="why">Fitting Room is off until you turn it on for a store. Click the toolbar icon on any store and flip the switch. Chrome asks once per store.</p>
+        <p class="why">FittingRoom is off until you turn it on for a store. Click the toolbar icon on any store and flip the switch. Chrome asks once per store.</p>
         <ul class="summary" id="summary"></ul>
         <div class="done-actions">
           <button type="button" class="btn primary lg forward" id="close">Start shopping</button>
@@ -109,6 +113,10 @@
       </footer>
     </section>
   </main>
+
+  <a class="dubhacks" href="https://dubhacks.co" target="_blank" rel="noopener">
+    <img src="../ui/dubhacks.svg" alt="" width="28" height="28">Built at DubHacks ’26
+  </a>
 
   <script src="../lib/sizes.js"></script>
   <script src="../lib/profile.js"></script>

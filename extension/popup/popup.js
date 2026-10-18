@@ -12,14 +12,13 @@ const SECTION = { men: 'Men’s', women: 'Women’s', both: 'Both sections' };
 // The setup answers as pills; Edit reopens setup with them filled in.
 function renderFit(profile) {
   const P = window.FitKit.profile;
-  const a = P.anchorItem(profile);
   const cm = profile.body && profile.body.heightCm;
   const inches = cm ? Math.round(cm / 2.54) : 0;
   const pills = [
     SECTION[profile.section],
     cm ? `${Math.floor(inches / 12)}′${inches % 12}″` : null,
     FIT[profile.preference],
-    a ? `${a.brand} ${a.size}` : null,
+    ...P.anchorItems(profile).map((a) => `${a.brand} ${a.size}`),
   ].filter(Boolean);
   const el = $('fit-pills');
   el.textContent = '';

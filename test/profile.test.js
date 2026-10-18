@@ -19,36 +19,42 @@ test('onboarding answers are stored once and marked complete', () => {
   assert.equal(p.onboardedAt, '2026-10-17T12:00:00Z');
 });
 
-test('the best-fitting piece becomes one wardrobe item that fit well', () => {
-  const p = run({ type: 'setAnchorItem', item: { brand: 'Uniqlo', category: 'bottom', subcategory: 'jeans', section: 'men', size: '32', system: 'waist' } });
-  assert.equal(p.wardrobe.length, 1);
-  assert.equal(p.wardrobe[0].feedback, 'perfect');
-  assert.equal(p.wardrobe[0].source, 'onboarding');
-  assert.equal(p.wardrobe[0].system, 'waist');
+test('each best-fitting piece becomes a wardrobe item that fit well', () => {
+  const p = run({ type: 'setAnchorItems', items: [
+    { brand: 'Uniqlo', category: 'top', section: 'men', size: 'L', system: 'alpha' },
+    { brand: 'Uniqlo', category: 'bottom', section: 'men', size: '32x30', system: 'waistInseam' },
+    { brand: "Levi's", category: 'bottom', section: 'men', size: '32', system: 'waist' },
+  ] });
+  assert.deepEqual(p.wardrobe.map((w) => [w.brand, w.category, w.size]), [
+    ['Uniqlo', 'top', 'L'], ['Uniqlo', 'bottom', '32x30'], ["Levi's", 'bottom', '32'],
+  ]);
+  assert.ok(p.wardrobe.every((w) => w.feedback === 'perfect' && w.source === 'onboarding'));
+  assert.equal(P.anchorItems(p).length, 3);
 });
 
-test('changing the best-fitting piece replaces it instead of adding another', () => {
+test('saving setup again replaces the best-fitting pieces instead of adding more', () => {
   const p = run(
     { type: 'addItem', item: { brand: 'Gap', category: 'top', size: 'L' } },
-    { type: 'setAnchorItem', item: { brand: 'Uniqlo', category: 'top', size: 'M' } },
-    { type: 'setAnchorItem', item: { brand: "Levi's", category: 'bottom', size: '32' } },
+    { type: 'setAnchorItems', items: [{ brand: 'Uniqlo', category: 'top', size: 'M' }, { brand: 'Zara', category: 'top', size: 'S' }] },
+    { type: 'setAnchorItems', items: [{ brand: "Levi's", category: 'bottom', size: '32' }] },
   );
   assert.deepEqual(p.wardrobe.map((w) => w.brand), ['Gap', "Levi's"]);
 });
 
-test('clearing the best-fitting piece removes only that item', () => {
+test('clearing the best-fitting pieces removes only those items', () => {
   const p = run(
     { type: 'addItem', item: { brand: 'Gap', category: 'top', size: 'L' } },
-    { type: 'setAnchorItem', item: { brand: 'Uniqlo', category: 'top', size: 'M' } },
-    { type: 'setAnchorItem', item: null },
+    { type: 'setAnchorItems', items: [{ brand: 'Uniqlo', category: 'top', size: 'M' }] },
+    { type: 'setAnchorItems', items: [] },
   );
   assert.deepEqual(p.wardrobe.map((w) => w.brand), ['Gap']);
+  assert.deepEqual(P.anchorItems(p), []);
 });
 
 test('older profiles without onboarding fields still load', () => {
   const p = P.apply({ version: 1, stated: {}, wardrobe: [] }, { type: 'setSection', section: 'men' });
   assert.equal(p.section, 'men');
-  assert.equal(P.anchorItem(p), null);
+  assert.deepEqual(P.anchorItems(p), []);
 });
 
 test('brand sizes are kept per kind of piece, never one size per brand', () => {

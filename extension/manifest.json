@@ -1,14 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "Fitting Room: what size do I buy here?",
-  "short_name": "Fitting Room",
+  "name": "FittingRoom: what size do I buy here?",
+  "short_name": "FittingRoom",
   "version": "0.1.0",
   "description": "Answers \"what size do I buy here?\" on the stores you enable, and gets more accurate as you shop. Your data stays on your device.",
   "permissions": ["storage", "scripting", "activeTab"],
   "optional_host_permissions": ["https://*/*", "http://*/*"],
   "host_permissions": ["http://localhost:8787/*"],
   "background": { "service_worker": "background.js" },
-  "action": { "default_popup": "popup/popup.html", "default_title": "Fitting Room" },
+  "action": { "default_popup": "popup/popup.html", "default_title": "FittingRoom" },
   "homepage_url": "https://github.com/Nathan-123/dubhacks2026project",
   "minimum_chrome_version": "116"
 }

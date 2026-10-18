@@ -165,14 +165,13 @@ function renderPinned() {
 
 // Setup answers as read-only pills, the same ones the popup shows.
 function renderAnswers() {
-  const a = P.anchorItem(profile);
   const cm = profile.body && profile.body.heightCm;
   const inches = cm ? Math.round(cm / 2.54) : 0;
   const pills = [
     SECTION[profile.section],
     cm ? `${Math.floor(inches / 12)}′${inches % 12}″` : null,
     FIT[profile.preference],
-    a ? `Best fit: ${a.brand} ${a.size}` : null,
+    ...P.anchorItems(profile).map((a) => `Best fit: ${a.brand} ${a.size}`),
   ].filter(Boolean);
   $('setup-answers').innerHTML = pills.map((t) => `<span class="pill">${esc(t)}</span>`).join('');
   $('edit-setup').textContent = pills.length ? 'Edit setup' : 'Set up';
@@ -193,7 +192,7 @@ async function renderStores() {
   // The same on/off switch as the popup.
   const row = (h, on) => `<li>${L.markup(L.find(logos, h), nameOf(h), 'sm')}
       <span class="grow"><span class="name">${esc(nameOf(h))}</span>${nameOf(h) !== h ? `<span class="host">${esc(h)}</span>` : ''}</span>
-      <button type="button" class="toggle" role="switch" aria-checked="${on}" aria-label="Fitting Room on ${esc(nameOf(h))}"
+      <button type="button" class="toggle" role="switch" aria-checked="${on}" aria-label="FittingRoom on ${esc(nameOf(h))}"
         data-act="${on ? 'remove-store' : 'enable-store'}" data-host="${esc(h)}"></button></li>`;
   const enabled = Object.entries(stores).filter(([, s]) => s.enabled).map(([h]) => h);
   const off = presets.map((p) => p.host).filter((h) => !enabled.includes(h));

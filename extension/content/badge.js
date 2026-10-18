@@ -8,7 +8,7 @@
 (function (root) {
   'use strict';
 
-  const PRODUCT_NAME = 'Fitting Room';
+  const PRODUCT_NAME = 'FittingRoom';
 
   // 20x20 line icons, drawn at 1.8px.
   const ICONS = {

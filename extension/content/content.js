@@ -149,30 +149,35 @@
     return changes;
   }
 
-  // The popup opens itself the first time the shopper picks a size on a product: that is when they are
-  // deciding, and the answer is ready. Once per product, so trying other sizes stays quiet.
-  let offeredFor = null;
-  function offerPopup() {
-    if (offeredFor === state.canonical) return;
-    offeredFor = state.canonical;
-    send('openPopup');
-  }
-
   // Re-read the live size control: selection and availability change without navigation.
   function refreshLive() {
-    const changes = liveSizeChanges(state.product);
-    if (!changes.length) return;
-    if (changes.some((c) => c.selected !== !!c.option.selected)) offerPopup();
+    if (!liveSizeChanges(state.product).length) return;
     rescore();
   }
 
+  // Picking a size opens the popup, at once and every time: that is when the shopper is deciding, and a click
+  // on the page has closed any popup that was open. It goes by the click itself, because many stores never
+  // mark the picked size in a way we can read. A <select> counts on change, since clicking it only opens it.
+  function isSizePick(e) {
+    const target = e.target && e.target.closest ? e.target : null;
+    if (!target) return false;
+    const ctl = K.extract.findSizeControl(document, state.ctx.config);
+    const inControl = ctl && ctl.container && ctl.container.contains && ctl.container.contains(target);
+    if (inControl) return e.type === 'change' || ctl.container.tagName !== 'SELECT';
+    if (e.type !== 'click' || !state.product || !state.product.sizes.options) return false;
+    const el = target.closest('button, [role="radio"], [role="option"], label, li, a, span, input');
+    const text = el && (el.textContent || el.value || '').trim();
+    return !!text && state.product.sizes.options.some((o) => o.label === text);
+  }
+
   let liveTimer = null;
-  function scheduleLive() {
+  function onPageInput(e) {
+    if (isSizePick(e)) send('openPopup');
     clearTimeout(liveTimer);
     liveTimer = setTimeout(refreshLive, 120);
   }
-  document.addEventListener('click', scheduleLive, true);
-  document.addEventListener('change', scheduleLive, true);
+  document.addEventListener('click', onPageInput, true);
+  document.addEventListener('change', onPageInput, true);
 
   // ---------------------------------------------------------------------------
   // extraction

@@ -106,6 +106,16 @@ async function page({ settings = { modelConfidence: false }, initialProduct = pr
       document.dispatchEvent(new document.defaultView.Event('change'));
       if (settle) await this.advance(120);
     },
+    // A real click on a size button. The store's selected styling is not changed, as on stores
+    // whose markup does not say which size is picked.
+    async clickSize(text) {
+      const button = document.createElement('button');
+      button.textContent = text;
+      document.querySelector('.sizes').appendChild(button);
+      button.dispatchEvent(new document.defaultView.Event('click', { bubbles: true }));
+      button.remove();
+      await flush();
+    },
     async sellOut(label) {
       liveOptions = liveOptions.map((o) => ({ ...o, available: o.label === label ? false : o.available }));
       document.dispatchEvent(new document.defaultView.Event('change'));
@@ -348,16 +358,15 @@ test('the store page itself is never changed; the result only goes to the popup'
   assert.equal((await p.popup('fitState')).view.status, 'done');
 });
 
-test('picking a size opens the popup once per product; just viewing the page does not', async () => {
+test('clicking a size opens the popup at once, every time, even when the page hides which size is picked', async () => {
   const p = await page();
   const opens = () => p.sent.filter((t) => t === 'openPopup').length;
-  assert.equal(opens(), 0, 'no size picked yet');
-  await p.select('S');
-  assert.equal(opens(), 1);
-  await p.select('L');
-  assert.equal(opens(), 1, 'more size picks on the same product stay quiet');
-  await p.navigate({ ok: true, product: product('B') });
-  await p.advance(700);
-  await p.select('S');
-  assert.equal(opens(), 2, 'a new product offers again');
+  assert.equal(opens(), 0, 'just viewing the page does not');
+  await p.clickSize('S');
+  assert.equal(opens(), 1, 'no waiting for the selection to show up');
+  // Clicking the page closed the popup; the next size brings it back.
+  await p.clickSize('L');
+  assert.equal(opens(), 2);
+  await p.clickSize('Add to bag');
+  assert.equal(opens(), 2, 'other buttons stay quiet');
 });

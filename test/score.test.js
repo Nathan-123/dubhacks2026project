@@ -226,9 +226,18 @@ test('relaxed fit aims larger than slim fit', async () => {
 });
 
 test('the onboarding best-fitting piece personalizes other brands', async () => {
-  const prof = profileWith([{ type: 'setAnchorItem', item: { brand: 'Uniqlo', category: 'top', section: 'men', size: 'M' } }]);
+  const prof = profileWith([{ type: 'setAnchorItems', items: [{ brand: 'Uniqlo', category: 'top', section: 'men', size: 'M' }] }]);
   const rec = run(await product('shopify-tee'), prof);
   assert.equal(rec.personalized, true);
+  assert.equal(rec.why.baseline.label, 'M');
+});
+
+test('a best-fitting bottom does not change the size for a top', async () => {
+  const prof = profileWith([{ type: 'setAnchorItems', items: [
+    { brand: 'Uniqlo', category: 'top', section: 'men', size: 'M' },
+    { brand: "Levi's", category: 'bottom', section: 'men', size: '36x32', system: 'waistInseam' },
+  ] }]);
+  const rec = run(await product('shopify-tee'), prof);
   assert.equal(rec.why.baseline.label, 'M');
 });
 

@@ -1,7 +1,7 @@
 'use strict';
 
 /*
- * The footer on the closet and privacy pages: who built Fitting Room and where to find it.
+ * The footer on the closet and privacy pages: who built FittingRoom and where to find it.
  * Add each teammate to TEAM as { name, linkedin } and they show up on every page.
  */
 (function () {
@@ -19,7 +19,7 @@
 
   document.getElementById('site-footer').innerHTML = `<div class="footer-row">
       <span class="made">Built at DubHacks ’26</span>
-      <nav class="footer-links" aria-label="About Fitting Room">
+      <nav class="footer-links" aria-label="About FittingRoom">
         <a href="../privacy/privacy.html">Privacy</a>
         <a href="${REPO}" target="_blank" rel="noopener noreferrer">${icon(GITHUB)}GitHub</a>
       </nav>
